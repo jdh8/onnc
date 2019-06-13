@@ -4,13 +4,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-static int32_t multinomial(int i, int classSize, const float * input_input){
+static int multinomial(int i, int classSize, const float * input_input){
   float cum_prb[classSize];
   cum_prb[0] = input_input[i * classSize];
-  for(int32_t j = 1; j < classSize; j++){
+  for(int j = 1; j < classSize; j++){
     cum_prb[j] = cum_prb[j-1] + input_input[i * classSize + j];
   }
-  for (int32_t j = 0; j <  classSize - 1; j++){
+  for (int j = 0; j <  classSize - 1; j++){
     if (rand() / (float)(RAND_MAX) < cum_prb[j]){
       return j;
     }
@@ -21,24 +21,24 @@ static int32_t multinomial(int i, int classSize, const float * input_input){
 void ONNC_RUNTIME_multinomial_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_input
-  ,int32_t input_input_ndim, const int32_t * restrict input_input_dims
+  ,int input_input_ndim, const int * restrict input_input_dims
   ,float * restrict output_output
-  ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
-  ,int32_t dtype
-  ,int32_t sample_size
+  ,int output_output_ndim, const int * restrict output_output_dims
+  ,int dtype
+  ,int sample_size
   ,float seed
 ) {
   srand(seed);
-  int32_t batchSize = input_input_dims[0];
-  int32_t classSize = input_input_dims[1];
-  for(int32_t i = 0; i < batchSize; i++){
-    for(int32_t j = 0; j < classSize; j++){
+  int batchSize = input_input_dims[0];
+  int classSize = input_input_dims[1];
+  for(int i = 0; i < batchSize; i++){
+    for(int j = 0; j < classSize; j++){
       output_output[i * classSize + j] = 0;
     }
   }
-  int32_t index;
-  for(int32_t i = 0; i < batchSize; i++){
-    for(int32_t j = 0; j < sample_size; j++){
+  int index;
+  for(int i = 0; i < batchSize; i++){
+    for(int j = 0; j < sample_size; j++){
       index = multinomial(i, classSize, input_input);
       output_output[i * classSize + index] ++;
     }

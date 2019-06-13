@@ -7,27 +7,27 @@
 void ONNC_RUNTIME_reducemin_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_data
-  ,int32_t input_data_ndim, const int32_t * restrict input_data_dims
+  ,int input_data_ndim, const int * restrict input_data_dims
   ,float * restrict output_reduced
-  ,int32_t output_reduced_ndim, const int32_t * restrict output_reduced_dims
-  ,int32_t * restrict axes
-  ,int32_t number_of_axes
-  ,int32_t keepdims
+  ,int output_reduced_ndim, const int * restrict output_reduced_dims
+  ,int * restrict axes
+  ,int number_of_axes
+  ,int keepdims
 ) {
-  int32_t ndim = input_data_ndim;
-  int32_t nk_ndim = input_data_ndim - number_of_axes;
+  int ndim = input_data_ndim;
+  int nk_ndim = input_data_ndim - number_of_axes;
 
   //output elements
-  int32_t nk_output_elem = 1;
-  int32_t input_elem = 1;
+  int nk_output_elem = 1;
+  int input_elem = 1;
 
 
-  int32_t nk_output_dims[nk_ndim];
-  int32_t ip = 0;
-  int32_t counter;
-  for(int32_t i = 0; i < ndim; i++){
+  int nk_output_dims[nk_ndim];
+  int ip = 0;
+  int counter;
+  for(int i = 0; i < ndim; i++){
     counter = 0;
-    for(int32_t j = 0; j < number_of_axes; j++){
+    for(int j = 0; j < number_of_axes; j++){
       if(i != axes[j]) counter++;
     }
     if(counter == number_of_axes){
@@ -42,15 +42,15 @@ void ONNC_RUNTIME_reducemin_float(
   float result[nk_output_elem];
 
   //input stride, for reference
-  int32_t InDimStride[ndim];
+  int InDimStride[ndim];
   InDimStride[ndim-1] = 1;
-  for(int32_t i = (ndim - 1) - 1; i >= 0; i--){
+  for(int i = (ndim - 1) - 1; i >= 0; i--){
     InDimStride[i] = InDimStride[i+1] * input_data_dims[i+1];
   }
 
-  int32_t OutDimStride[nk_ndim];
+  int OutDimStride[nk_ndim];
   OutDimStride[nk_ndim-1] = 1;
-  for(int32_t i = (nk_ndim - 1) - 1; i >= 0; i--){
+  for(int i = (nk_ndim - 1) - 1; i >= 0; i--){
     OutDimStride[i] = OutDimStride[i+1] * nk_output_dims[i+1];
   }
 
@@ -58,21 +58,21 @@ void ONNC_RUNTIME_reducemin_float(
   //To locate coordinates, count the strides!
 
   //iteration setup
-  int32_t inDimCounter = 0;
-  int32_t outDimCounter= 0;
-  int32_t inIndexCounter = 0;
-  int32_t outIndexCounter = 0;
+  int inDimCounter = 0;
+  int outDimCounter= 0;
+  int inIndexCounter = 0;
+  int outIndexCounter = 0;
 
-  int32_t index = 0;
+  int index = 0;
   float min_temp[nk_output_elem];
 
-  for(int32_t i = 0; i < nk_output_elem; i++){
+  for(int i = 0; i < nk_output_elem; i++){
     min_temp[i] = FLT_MAX;
   }
   //This 3 loop using top down algorithm to reduce the max 
   //locate index , transform to constiguous array index
   //ommit the AXES DIMENTION in order to obtain MAX in certain vector
-  for(int32_t i = 0; i < input_elem; i++){
+  for(int i = 0; i < input_elem; i++){
     inIndexCounter = i;
     outIndexCounter = 0;
     inDimCounter = 0;
@@ -81,7 +81,7 @@ void ONNC_RUNTIME_reducemin_float(
       counter = 0;
       index = inIndexCounter / InDimStride[inDimCounter];
       inIndexCounter %= InDimStride[inDimCounter];
-      for(int32_t j = 0; j < number_of_axes; j++){
+      for(int j = 0; j < number_of_axes; j++){
         if(inDimCounter != axes[j]) counter++;
       }
       if(counter == number_of_axes){
@@ -98,7 +98,7 @@ void ONNC_RUNTIME_reducemin_float(
   }
   //keep dimension
   if(keepdims == 1){
-    for(int32_t i = 0; i < input_elem; i++){
+    for(int i = 0; i < input_elem; i++){
       inIndexCounter = i;
       outIndexCounter = 0;
       inDimCounter = 0;
@@ -107,7 +107,7 @@ void ONNC_RUNTIME_reducemin_float(
         counter = 0;
         index = inIndexCounter / InDimStride[inDimCounter];
         inIndexCounter %= InDimStride[inDimCounter];
-        for(int32_t j = 0; j < number_of_axes; j++){
+        for(int j = 0; j < number_of_axes; j++){
           if(inDimCounter != axes[j]) counter++;
         }
         if(counter == number_of_axes){
@@ -119,7 +119,7 @@ void ONNC_RUNTIME_reducemin_float(
       output_reduced[i] = result[outIndexCounter];
     }
   }else if(keepdims == 0){
-    for(int32_t i = 0; i < nk_output_elem; i++){
+    for(int i = 0; i < nk_output_elem; i++){
       output_reduced[i] = result[i];
     }
   }

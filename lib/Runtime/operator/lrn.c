@@ -7,13 +7,13 @@
 void ONNC_RUNTIME_lrn_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
+  ,int input_X_ndim, const int * restrict input_X_dims
   ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
+  ,int output_Y_ndim, const int * restrict output_Y_dims
   ,float alpha
   ,float beta
   ,float bias
-  ,int32_t size
+  ,int size
 ) {
   // XXX: WFT ONNX.
   // (bias+(alpha/size)*sum(xi^2 for every xi in the local region))^beta
@@ -22,7 +22,7 @@ void ONNC_RUNTIME_lrn_float(
   int64_t N = input_X_dims[0];
   int64_t C = input_X_dims[1];
   int64_t len = 1;
-  for (int32_t i = 2; i < input_X_ndim; ++i) {
+  for (int i = 2; i < input_X_ndim; ++i) {
     len *= input_X_dims[i];
   }
   for (int64_t n = 0; n < N; ++n) {

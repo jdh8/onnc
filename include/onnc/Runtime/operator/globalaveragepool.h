@@ -1,13 +1,8 @@
-#pragma once
-
-#include <stdint.h>
-#include <stdbool.h>
-
 void ONNC_RUNTIME_globalaveragepool_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
+  ,int input_X_ndim, const int * restrict input_X_dims
   ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
+  ,int output_Y_ndim, const int * restrict output_Y_dims
   
 );

@@ -4,36 +4,36 @@
 #include <float.h>
 #include <stdbool.h>
 
-static int32_t findIndex(int32_t index, int32_t axisDim, int32_t elementDistance){
+static int findIndex(int index, int axisDim, int elementDistance){
   return (index / (axisDim * elementDistance)) * elementDistance + index % elementDistance;
 }
 
 void ONNC_RUNTIME_argmax_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_data
-  ,int32_t input_data_ndim, const int32_t * restrict input_data_dims
+  ,int input_data_ndim, const int * restrict input_data_dims
   ,float * restrict output_reduced
-  ,int32_t output_reduced_ndim, const int32_t * restrict output_reduced_dims
-  ,int32_t axis
-  ,int32_t keepdims
+  ,int output_reduced_ndim, const int * restrict output_reduced_dims
+  ,int axis
+  ,int keepdims
 ) {
-  int32_t axisDim = input_data_dims[axis];
-  int32_t axisElementDistance = 1;
-  for(int32_t dim = axis + 1 ; dim < input_data_ndim ; dim++){
+  int axisDim = input_data_dims[axis];
+  int axisElementDistance = 1;
+  for(int dim = axis + 1 ; dim < input_data_ndim ; dim++){
     axisElementDistance *= input_data_dims[dim];
   }
 
-  int32_t size = axisElementDistance;
-  for(int32_t dim = 0 ; dim <= axis ; dim++){
+  int size = axisElementDistance;
+  for(int dim = 0 ; dim <= axis ; dim++){
     size *= input_data_dims[dim];
   }
 
-  int32_t try = 0;
+  int try = 0;
   while(try < size){
     /* Initialize try context */
-    int32_t index = try;
+    int index = try;
     float max = FLT_MIN;
-    int32_t axisIndex = 0, maxIndex = 0;
+    int axisIndex = 0, maxIndex = 0;
     while(axisIndex < axisDim){
       if(input_data[index] > max){
         max = input_data[index];
@@ -44,7 +44,7 @@ void ONNC_RUNTIME_argmax_float(
     }
 
     /* fill the data to output */
-    int32_t fillIndex = findIndex(try, axisDim, axisElementDistance);
+    int fillIndex = findIndex(try, axisDim, axisElementDistance);
     output_reduced[fillIndex] = maxIndex;
 
     /* update round context */

@@ -1,20 +1,15 @@
-#pragma once
-
-#include <stdint.h>
-#include <stdbool.h>
-
 void ONNC_RUNTIME_averagepool_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
+  ,int input_X_ndim, const int * restrict input_X_dims
   ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
+  ,int output_Y_ndim, const int * restrict output_Y_dims
   ,const char * restrict auto_pad
-  ,int32_t count_include_pad
-  ,int32_t * restrict kernel_shape
-  ,int32_t number_of_kernel_shape
-  ,int32_t * restrict pads
-  ,int32_t number_of_pads
-  ,int32_t * restrict strides
-  ,int32_t number_of_strides
+  ,int count_include_pad
+  ,int * restrict kernel_shape
+  ,int number_of_kernel_shape
+  ,int * restrict pads
+  ,int number_of_pads
+  ,int * restrict strides
+  ,int number_of_strides
 );
