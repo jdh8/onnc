@@ -15,10 +15,8 @@ static int _increment(Index* restrict index, const Index* restrict shape, Index 
     if (order < 1)
         return 1;
 
-    if (index[end] + 1 < shape[end]) {
-        index[end]++;
+    if (++(index[end]) < shape[end])
         return 0;
-    }
 
     index[end] = 0;
     return _increment(index, shape, end);
@@ -33,7 +31,8 @@ static void _assign(Scalar* restrict y, const Scalar* restrict x,
         index[i] = 0;
 
     for (Index i = 0; ; ++i) {
-        y[i] = x[_idot(index, strides, order)];
+        Index offset = _idot(index, strides, order);
+        y[i] = x[offset];
 
         if (_increment(index, shape, order))
             break;

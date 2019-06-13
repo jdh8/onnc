@@ -15,10 +15,13 @@ static void _expand(
     for (Index i = xorder - 1; i > 0; --i)
         strides[i - 1] = xshape[i] * strides[i];
 
+    for (Index i = 0; i < xorder; ++i)
+        strides[i] *= xshape[i] > 1;
+
     _assign(y, x, yshape + diff, strides, xorder);
 
     Index size = _size(yshape + diff, xorder);
-    Index count = _expand_size(yshape, diff);
+    Index count = _size(yshape, diff);
 
     for (Index i = 1; i < count; ++i)
         _copy(y + i * size, y, size);
