@@ -1,3 +1,6 @@
+#ifndef ONNC_OPERATOR_GENERIC_ASSIGN
+#define ONNC_OPERATOR_GENERIC_ASSIGN
+
 static Index _idot(const Index* x, const Index* y, Index count)
 {
     Index result = 0;
@@ -39,4 +42,5 @@ static void _assign(Scalar* restrict y, const Scalar* restrict x,
     }
 }
 
+#endif
 // vim: ft=c

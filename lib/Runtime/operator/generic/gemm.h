@@ -1,3 +1,6 @@
+#ifndef ONNC_OPERATOR_GENERIC_GEMM
+#define ONNC_OPERATOR_GENERIC_GEMM
+
 static void _gemmABT(
     Scalar* restrict y, const Scalar* restrict a, const Scalar* restrict b,
     Scalar alpha, Index rows, Index cols, Index depth, int op)
@@ -31,5 +34,6 @@ static void _gemm(
     (opb ? _gemmABT : _gemmAB)(y, a, b, alpha, rows, cols, depth, opa);
 }
 
+#endif
 // TODO: Consider conjugation when we have to support complex scalars
 // vim: ft=c

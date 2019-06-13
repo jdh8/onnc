@@ -1,3 +1,6 @@
+#ifndef ONNC_OPERATOR_GENERIC_BROADCAST
+#define ONNC_OPERATOR_GENERIC_BROADCAST
+
 #include "assign.h"
 #include "copy.h"
 #include "size.h"
@@ -27,4 +30,5 @@ static void _broadcast(
         _copy(y + i * size, y, size);
 }
 
+#endif
 // vim: ft=c
