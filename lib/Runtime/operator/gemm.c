@@ -12,10 +12,14 @@ void ONNC_RUNTIME_gemm_float(void* restrict context,
     float* restrict Y, int Ydim, const int* restrict Yshape,
     float alpha, float beta, int transA, int transB)
 {
-    _broadcast(Y, Yshape, Ydim, C, Cshape, Cdim);
+    int rows = Yshape[0];
+    int cols = Yshape[1];
+    int depth = Ashape[!transA];
 
-    for (int i = 0; i < _size(Yshape, Ydim); ++i)
+    _broadcast(Y, Yshape, 2, C, Cshape, Cdim);
+
+    for (int i = 0; i < rows * cols; ++i)
         Y[i] *= beta;
 
-    _gemm(Y, A, B, alpha, Yshape[0], Yshape[1], Ashape[!transA], transA, transB);
+    _gemm(Y, A, B, alpha, rows, cols, depth, transA, transB);
 }
