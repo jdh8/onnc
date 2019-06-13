@@ -2,7 +2,7 @@
 #include "copy.h"
 #include "size.h"
 
-static void _expand(
+static void _broadcast(
     Scalar* restrict y, const Index* restrict yshape, Index yorder,
     const Scalar* restrict x, const Index* restrict xshape, Index xorder)
 {
