@@ -5,7 +5,12 @@
 #include "size.h"
 #include "strides.h"
 
-static void _broadcast(
+/*!
+ * \brief Tensor assignment
+ *
+ * This function performs `y .= x` where `x` is broadcastable to `y`.
+ */
+static void _assign(
     Scalar* restrict y, const Index* restrict yshape, Index yorder,
     const Scalar* restrict x, const Index* restrict xshape, Index xorder)
 {

@@ -1,7 +1,7 @@
 typedef float Scalar;
 typedef int Index;
 
-#include "generic/broadcast.h"
+#include "generic/assign.h"
 #include "generic/gemm.h"
 #include "generic/size.h"
 
@@ -16,7 +16,7 @@ void ONNC_RUNTIME_gemm_float(void* restrict context,
     int cols = Yshape[1];
     int depth = Ashape[!transA];
 
-    _broadcast(Y, Yshape, 2, C, Cshape, Cdim);
+    _assign(Y, Yshape, 2, C, Cshape, Cdim);
 
     for (int i = 0; i < rows * cols; ++i)
         Y[i] *= beta;
