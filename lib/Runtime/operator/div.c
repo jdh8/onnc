@@ -1,5 +1,7 @@
+#include <stdint.h>
+
 typedef float Scalar;
-typedef int Index;
+typedef int32_t Index;
 
 #include "generic/assign.h"
 #include "generic/binary.h"
@@ -10,9 +12,9 @@ static float _div(float a, float b)
 }
 
 void ONNC_RUNTIME_div_float(void* restrict context,
-    const float* restrict A, int Adim, const int* restrict Ashape,
-    const float* restrict B, int Bdim, const int* restrict Bshape,
-    float* restrict C, int Cdim, const int* restrict Cshape)
+    const float* restrict A, int32_t Adim, const int32_t* restrict Ashape,
+    const float* restrict B, int32_t Bdim, const int32_t* restrict Bshape,
+    float* restrict C, int32_t Cdim, const int32_t* restrict Cshape)
 {
     _assign(C, Cshape, Cdim, A, Ashape, Adim);
     _binary(C, Cshape, Cdim, B, Bshape, Bdim, _div);
