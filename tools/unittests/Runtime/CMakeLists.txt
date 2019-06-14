@@ -6,4 +6,5 @@ function(add_onnc_runtime_test name)
 endfunction()
 
 add_onnc_runtime_test(Abs AbsTest.cpp)
+add_onnc_runtime_test(GEMM GEMM.cpp)
 add_onnc_runtime_test(Transpose TransposeTest.cpp)
