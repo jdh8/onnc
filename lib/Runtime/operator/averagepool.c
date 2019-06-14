@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-static inline bool next_dim(int ndim, int * restrict dim,
-                            const int * restrict dim_max) {
+static inline bool next_dim(int32_t ndim, int32_t * restrict dim,
+                            const int32_t * restrict dim_max) {
   do {
     ndim = ndim - 1;
     dim[ndim] += 1;
@@ -20,11 +20,11 @@ static inline bool next_dim(int ndim, int * restrict dim,
   } while(true);
 }
 
-static inline int64_t dim_to_offset(int ndim, const int * restrict dim,
-                                    const int * restrict dim_max) {
+static inline int64_t dim_to_offset(int32_t ndim, const int32_t * restrict dim,
+                                    const int32_t * restrict dim_max) {
   int64_t offset = 0;
   int64_t step = 1;
-  for (int i = ndim - 1; i >= 0; --i) {
+  for (int32_t i = ndim - 1; i >= 0; --i) {
     offset += dim[i] * step;
     step *= dim_max[i];
   }
@@ -32,9 +32,9 @@ static inline int64_t dim_to_offset(int ndim, const int * restrict dim,
 }
 
 // If it is outside the bounds of the input, use 0.
-static inline float get_value_or_zero(int ndim, const int * restrict dim_max,
-                                      const float * restrict value, const int * restrict dim, int * isPad) {
-  for (int i = 0; i < ndim; ++i) {
+static inline float get_value_or_zero(int32_t ndim, const int32_t * restrict dim_max,
+                                      const float * restrict value, const int32_t * restrict dim, int32_t * isPad) {
+  for (int32_t i = 0; i < ndim; ++i) {
     if (dim[i] < 0 || dim[i] >= dim_max[i]) {
       if(isPad){
         *isPad = 1;
@@ -51,17 +51,17 @@ static inline float get_value_or_zero(int ndim, const int * restrict dim_max,
 void ONNC_RUNTIME_averagepool_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
-  ,int input_X_ndim, const int * restrict input_X_dims
+  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
   ,float * restrict output_Y
-  ,int output_Y_ndim, const int * restrict output_Y_dims
+  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
   ,const char * restrict auto_pad
-  ,int count_include_pad
-  ,int * restrict kernel_shape
-  ,int number_of_kernel_shape
-  ,int * restrict pads
-  ,int number_of_pads
-  ,int * restrict strides
-  ,int number_of_strides
+  ,int32_t count_include_pad
+  ,int32_t * restrict kernel_shape
+  ,int32_t number_of_kernel_shape
+  ,int32_t * restrict pads
+  ,int32_t number_of_pads
+  ,int32_t * restrict strides
+  ,int32_t number_of_strides
 ) {
   // TODO auto_pad
   int64_t size = 1;
@@ -69,27 +69,27 @@ void ONNC_RUNTIME_averagepool_float(
     size *= kernel_shape[i];
   }
 
-  int o_dim[input_X_ndim];
+  int32_t o_dim[input_X_ndim];
   memset(o_dim, 0, sizeof(o_dim));
   do { // while o_dim
-    int base_dim[input_X_ndim];
-    for (int i = 2; i < input_X_ndim; ++i) {
+    int32_t base_dim[input_X_ndim];
+    for (int32_t i = 2; i < input_X_ndim; ++i) {
       base_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
     }
 
     float sum = 0.f;
 
-    int k_dim[input_X_ndim - 2];
+    int32_t k_dim[input_X_ndim - 2];
     memset(k_dim, 0, sizeof(k_dim));
-    int padCount = 0;
+    int32_t padCount = 0;
     do { // while k_dim
-      int i_dim[input_X_ndim];
+      int32_t i_dim[input_X_ndim];
       i_dim[0] = o_dim[0]; // N
       i_dim[1] = o_dim[1]; // C
-      for (int i = 2; i < input_X_ndim; ++i) {
+      for (int32_t i = 2; i < input_X_ndim; ++i) {
         i_dim[i] = base_dim[i] + k_dim[i - 2];
       }
-      int isPad = 0;
+      int32_t isPad = 0;
       sum += get_value_or_zero(input_X_ndim, input_X_dims, input_X, i_dim, &isPad);
       if(isPad){
         ++padCount;

@@ -1,28 +1,33 @@
+#pragma once
+
+#include <stdint.h>
+#include <stdbool.h>
+
 void ONNC_RUNTIME_rnn_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
-  ,int input_X_ndim, const int * restrict input_X_dims
+  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
   ,const float * restrict input_W
-  ,int input_W_ndim, const int * restrict input_W_dims
+  ,int32_t input_W_ndim, const int32_t * restrict input_W_dims
   ,const float * restrict input_R
-  ,int input_R_ndim, const int * restrict input_R_dims
+  ,int32_t input_R_ndim, const int32_t * restrict input_R_dims
   ,const float * restrict input_B
-  ,int input_B_ndim, const int * restrict input_B_dims
+  ,int32_t input_B_ndim, const int32_t * restrict input_B_dims
   ,const float * restrict input_sequence_lens
-  ,int input_sequence_lens_ndim, const int * restrict input_sequence_lens_dims
+  ,int32_t input_sequence_lens_ndim, const int32_t * restrict input_sequence_lens_dims
   ,const float * restrict input_initial_h
-  ,int input_initial_h_ndim, const int * restrict input_initial_h_dims
+  ,int32_t input_initial_h_ndim, const int32_t * restrict input_initial_h_dims
   ,float * restrict output_Y
-  ,int output_Y_ndim, const int * restrict output_Y_dims
+  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
   ,float * restrict output_Y_h
-  ,int output_Y_h_ndim, const int * restrict output_Y_h_dims
+  ,int32_t output_Y_h_ndim, const int32_t * restrict output_Y_h_dims
   ,float * restrict activation_alpha
-  ,int number_of_activation_alpha
+  ,int32_t number_of_activation_alpha
   ,float * restrict activation_beta
-  ,int number_of_activation_beta
+  ,int32_t number_of_activation_beta
   ,const char ** restrict activations
-  ,int number_of_activations
+  ,int32_t number_of_activations
   ,float clip
   ,const char * restrict direction
-  ,int hidden_size
+  ,int32_t hidden_size
 );

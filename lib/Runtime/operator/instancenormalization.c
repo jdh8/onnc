@@ -7,18 +7,18 @@
 void ONNC_RUNTIME_instancenormalization_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_input
-  ,int input_input_ndim, const int * restrict input_input_dims
+  ,int32_t input_input_ndim, const int32_t * restrict input_input_dims
   ,const float * restrict input_scale
-  ,int input_scale_ndim, const int * restrict input_scale_dims
+  ,int32_t input_scale_ndim, const int32_t * restrict input_scale_dims
   ,const float * restrict input_B
-  ,int input_B_ndim, const int * restrict input_B_dims
+  ,int32_t input_B_ndim, const int32_t * restrict input_B_dims
   ,float * restrict output_output
-  ,int output_output_ndim, const int * restrict output_output_dims
+  ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
   ,float epsilon
 ) {
-  int nbatch = input_input_dims[0];
-  int nchannel = input_input_dims[1];
-  int ndim = input_input_ndim;
+  int32_t nbatch = input_input_dims[0];
+  int32_t nchannel = input_input_dims[1];
+  int32_t ndim = input_input_ndim;
   
   //The tensor is base on the number of batch and the number of channel
   float xtile_sum[nbatch][nchannel];
@@ -29,32 +29,32 @@ void ONNC_RUNTIME_instancenormalization_float(
   //H x W for 4 dims
   //D1 x D2 .. for more than 4 dims
   //Suppose mean and variance is calculated per batch and channel ,initialize them
-  for(int i =0; i < nbatch; i++){
-    for(int j =0; j < nchannel; j++){
+  for(int32_t i =0; i < nbatch; i++){
+    for(int32_t j =0; j < nchannel; j++){
       xtile_sum[i][j] = .0f;
       xtile_square_sum[i][j] = .0f;
     }
   }
 
   //Get dataSize : elem
-  int elem = 1;
-  for(int i =0; i < ndim; i++){
+  int32_t elem = 1;
+  for(int32_t i =0; i < ndim; i++){
     elem *= input_input_dims[i];
   }
 
   //Get stride for locate coordinate purpose
-  int dimStride[ndim];
+  int32_t dimStride[ndim];
   dimStride[ndim - 1] = 1;
-  for(int i = (ndim - 1) - 1; i >= 0; i--){
+  for(int32_t i = (ndim - 1) - 1; i >= 0; i--){
     dimStride[i] = dimStride[i+1] * input_input_dims[i+1];
   }
 
   //Group the element-wise data to first two dimension
   //To calculate summation of xtile and xtile^2 (for mean and variance) 
-  int coor[elem][2];
-  int indexCounter;
-  int dimCounter;
-  for(int i = 0; i < elem; i++){
+  int32_t coor[elem][2];
+  int32_t indexCounter;
+  int32_t dimCounter;
+  for(int32_t i = 0; i < elem; i++){
     indexCounter = i;
     dimCounter = 0;
     //0 , 1 dims are batch and channel
@@ -72,8 +72,8 @@ void ONNC_RUNTIME_instancenormalization_float(
   }
 
   // Obtain mean and variance per channel and batch
-  for(int i = 0; i < nbatch; i++){
-    for(int j = 0; j < nchannel; j++){
+  for(int32_t i = 0; i < nbatch; i++){
+    for(int32_t j = 0; j < nchannel; j++){
       mean[i][j] = 1.0f / (float)(nbatch * nchannel) * xtile_sum[i][j];
       variance[i][j] = 1.0f / (float)(nbatch * nchannel) * xtile_square_sum[i][j] - powf(mean[i][j],2);
     }
@@ -81,7 +81,7 @@ void ONNC_RUNTIME_instancenormalization_float(
 
   //Formula
   //y = scale * (x - mean) / sqrt(variance + epsilon) + B
-  for(int i = 0; i < elem; i++){
+  for(int32_t i = 0; i < elem; i++){
     //Note that BIAS and SCALE are only per channel
     //coor[i][1] is Channel index
     output_output[i] = input_scale[coor[i][1]] * (input_input[i] - mean[coor[i][1]][coor[i][1]]) / sqrtf(variance[coor[i][1]][coor[i][1]] - epsilon) + input_B[coor[i][1]];

@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-static inline bool next_dim(int ndim, int * restrict dim,
-                            const int * restrict dim_max) {
+static inline bool next_dim(int32_t ndim, int32_t * restrict dim,
+                            const int32_t * restrict dim_max) {
   do {
     ndim = ndim - 1;
     dim[ndim] += 1;
@@ -20,11 +20,11 @@ static inline bool next_dim(int ndim, int * restrict dim,
   } while(true);
 }
 
-static inline int64_t dim_to_offset(int ndim, const int * restrict dim,
-                                    const int * restrict dim_max) {
+static inline int64_t dim_to_offset(int32_t ndim, const int32_t * restrict dim,
+                                    const int32_t * restrict dim_max) {
   int64_t offset = 0;
   int64_t step = 1;
-  for (int i = ndim - 1; i >= 0; --i) {
+  for (int32_t i = ndim - 1; i >= 0; --i) {
     offset += dim[i] * step;
     step *= dim_max[i];
   }
@@ -32,9 +32,9 @@ static inline int64_t dim_to_offset(int ndim, const int * restrict dim,
 }
 
 // If it is outside the bounds of the input, use 0.
-static inline float get_value_or_zero(int ndim, const int * restrict dim_max,
-                                      const float * restrict value, const int * restrict dim) {
-  for (int i = 0; i < ndim; ++i) {
+static inline float get_value_or_zero(int32_t ndim, const int32_t * restrict dim_max,
+                                      const float * restrict value, const int32_t * restrict dim) {
+  for (int32_t i = 0; i < ndim; ++i) {
     if (dim[i] < 0 || dim[i] >= dim_max[i]) {
       return 0.f;
     }
@@ -43,41 +43,41 @@ static inline float get_value_or_zero(int ndim, const int * restrict dim_max,
 }
 
 void ONNC_RUNTIME_conv_2d_float(void * restrict onnc_runtime_context,
-                                int N, int C, int iH, int iW,
+                                int32_t N, int32_t C, int32_t iH, int32_t iW,
                                 const float X[restrict N][C][iH][iW],
-                                int M, int kC, int kH, int kW,
+                                int32_t M, int32_t kC, int32_t kH, int32_t kW,
                                 const float W[restrict M][kC][kH][kW],
                                 const float B[restrict M],
-                                int oN, int oC, int oH, int oW,
+                                int32_t oN, int32_t oC, int32_t oH, int32_t oW,
                                 float Y[restrict oN][oC][oH][oW],
-                                int auto_pad,
-                                const int * restrict dilations,
-                                int group,
-                                const int * restrict kernel_shape,
-                                const int * restrict pads,
-                                const int * restrict strides) {
+                                int32_t auto_pad,
+                                const int32_t * restrict dilations,
+                                int32_t group,
+                                const int32_t * restrict kernel_shape,
+                                const int32_t * restrict pads,
+                                const int32_t * restrict strides) {
   // TODO: auto_pad
   // TODO: type
-  for (int n = 0; n < oN; ++n) {
-    for (int c = 0; c < oC; ++c) {
+  for (int32_t n = 0; n < oN; ++n) {
+    for (int32_t c = 0; c < oC; ++c) {
 
-      for (int h = 0; h < oH; ++h) {
-        for (int w = 0; w < oW; ++w) {
+      for (int32_t h = 0; h < oH; ++h) {
+        for (int32_t w = 0; w < oW; ++w) {
 
-          int base_c = (c * group / M) * kC; // input channel <-group-> output channel
-          int base_h = h * strides[0] - pads[0];
-          int base_w = w * strides[1] - pads[1];
+          int32_t base_c = (c * group / M) * kC; // input channel <-group-> output channel
+          int32_t base_h = h * strides[0] - pads[0];
+          int32_t base_w = w * strides[1] - pads[1];
 
           float sum = 0.f;
 
-          for (int i = (base_h < 0 ? (-base_h) / dilations[0] : 0); i < kH; ++i) {
-            int input_h = base_h + i * dilations[0];
+          for (int32_t i = (base_h < 0 ? (-base_h) / dilations[0] : 0); i < kH; ++i) {
+            int32_t input_h = base_h + i * dilations[0];
             if (input_h >= iH) { break; }
-            for (int j =  (base_w < 0 ? (-base_w) / dilations[1] : 0); j < kW; ++j) {
-              int input_w = base_w + j * dilations[1];
+            for (int32_t j =  (base_w < 0 ? (-base_w) / dilations[1] : 0); j < kW; ++j) {
+              int32_t input_w = base_w + j * dilations[1];
               if (input_w >= iW) { break; }
-              for (int w_channel = 0; w_channel < kC; ++w_channel) {
-                int input_channel = base_c + w_channel;
+              for (int32_t w_channel = 0; w_channel < kC; ++w_channel) {
+                int32_t input_channel = base_c + w_channel;
 
                 float input = X[n][input_channel][input_h][input_w];
                 float weight = W[c][w_channel][i][j];
@@ -99,27 +99,27 @@ void ONNC_RUNTIME_conv_2d_float(void * restrict onnc_runtime_context,
 void ONNC_RUNTIME_conv_float(
   void * restrict onnc_runtime_context
   ,const float * restrict input_X
-  ,int input_X_ndim, const int * restrict input_X_dims
+  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
   ,const float * restrict input_W
-  ,int input_W_ndim, const int * restrict input_W_dims
+  ,int32_t input_W_ndim, const int32_t * restrict input_W_dims
   ,const float * restrict input_B
-  ,int input_B_ndim, const int * restrict input_B_dims
+  ,int32_t input_B_ndim, const int32_t * restrict input_B_dims
   ,float * restrict output_Y
-  ,int output_Y_ndim, const int * restrict output_Y_dims
+  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
   ,const char * restrict auto_pad
-  ,int * restrict dilations
-  ,int number_of_dilations
-  ,int group
-  ,int * restrict kernel_shape
-  ,int number_of_kernel_shape
-  ,int * restrict pads
-  ,int number_of_pads
-  ,int * restrict strides
-  ,int number_of_strides
+  ,int32_t * restrict dilations
+  ,int32_t number_of_dilations
+  ,int32_t group
+  ,int32_t * restrict kernel_shape
+  ,int32_t number_of_kernel_shape
+  ,int32_t * restrict pads
+  ,int32_t number_of_pads
+  ,int32_t * restrict strides
+  ,int32_t number_of_strides
 ) {
-    int M = input_W_dims[0];
-    int C = input_W_dims[1];
-    int ndim = input_X_ndim;
+    int32_t M = input_W_dims[0];
+    int32_t C = input_W_dims[1];
+    int32_t ndim = input_X_ndim;
 
     if (ndim == 4) {
       typedef const float (*input_tensor_type )[input_X_dims[1] ][input_X_dims[2] ][input_X_dims[3] ];
@@ -147,18 +147,18 @@ void ONNC_RUNTIME_conv_float(
     }
 
     // TODO: type
-    int o_dim[ndim];
+    int32_t o_dim[ndim];
     memset(o_dim, 0, sizeof(o_dim));
     do { // while o_dim
-        int base_dim[ndim];
+        int32_t base_dim[ndim];
         base_dim[0] = o_dim[0]; // N
-        for (int i = 2; i < ndim; ++i) {
+        for (int32_t i = 2; i < ndim; ++i) {
             base_dim[i] = o_dim[i] * strides[i - 2] - pads[i - 2];
         }
 
         float sum = 0.f;
 
-        int w_dim[ndim];
+        int32_t w_dim[ndim];
         memset(w_dim, 0, sizeof(w_dim));
         w_dim[0] = o_dim[1]; // M;
         do { // while w_dim
@@ -166,12 +166,12 @@ void ONNC_RUNTIME_conv_float(
                 break;
             }
 
-            int i_dim[ndim];
+            int32_t i_dim[ndim];
             i_dim[0] = base_dim[0]; // N
-            for (int i = 2; i < ndim; ++i) {
+            for (int32_t i = 2; i < ndim; ++i) {
                 i_dim[i] = base_dim[i] + w_dim[i] * dilations[i - 2];
             }
-            for (int channel = 0; channel < C; ++channel) {
+            for (int32_t channel = 0; channel < C; ++channel) {
                 i_dim[1] = (o_dim[1] * group / M) * C + channel; // input channel <-group-> output channel
                 w_dim[1] = channel; // C
 
