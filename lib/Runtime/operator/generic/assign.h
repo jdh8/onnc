@@ -1,17 +1,22 @@
-#ifndef ONNC_OPERATOR_GENERIC_BROADCAST
-#define ONNC_OPERATOR_GENERIC_BROADCAST
+#ifndef ONNCRT_ASSIGN_H
+#define ONNCRT_ASSIGN_H
 
 #include "copy.h"
 #include "size.h"
 #include "strides.h"
-
 /*!
  * \brief Tensor assignment
  *
  * This function performs `y .= x` where `x` is broadcastable to `y`.
+ *
+ * For example, if `y` is a 3x4 matrix and `x = [a b c d]`, resulting `y`
+ * would be
+ *
+ *     [a  b  c  d;
+ *      a  b  c  d;
+ *      a  b  c  d]
  */
-static void _assign(
-    Scalar* restrict y, const Index* restrict yshape, Index yorder,
+static void _assign(Scalar* restrict y, const Index* restrict yshape, Index yorder,
     const Scalar* restrict x, const Index* restrict xshape, Index xorder)
 {
     Index diff = yorder - xorder;

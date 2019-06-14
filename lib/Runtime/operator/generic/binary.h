@@ -1,54 +1,31 @@
-#ifndef ONNC_OPERATOR_GENERIC_BINARY
-#define ONNC_OPERATOR_GENERIC_BINARY
+#ifndef ONNCRT_BINARY_H
+#define ONNCRT_BINARY_H
 
 #include "size.h"
 #include "strides.h"
-
-static Index _imax(Index a, Index b)
+/*!
+ * \brief Inplace binary operator
+ *
+ * This function performs `y = f.(y, x)` where `x` is broadcastable to `y`.
+ * For example, if `f = +`, then `y .+= x` is performed.
+ */
+static void _binary(Scalar* restrict y, const Index* restrict yshape, Index yorder,
+    const Scalar* restrict x, const Index* restrict xshape, Index xorder, Scalar f(Scalar, Scalar))
 {
-    return a < b ? b : a;
-}
+    Index diff = yorder - xorder;
+    Index size = _size(yshape, yorder);
+    Index index[yorder];
+    Index strides[xorder];
 
-static void _binary_sorted(Scalar* restrict y, Scalar f(Scalar, Scalar),
-    const Scalar* restrict a, const Index* restrict ashape, Index order,
-    const Scalar* restrict b, const Index* restrict bshape, Index lesser)
-{
-    Index diff = order - lesser;
-    Index index[order];
-    Index shape[order];
-    Index astrides[order];
-    Index bstrides[order];
+    _strides(strides, xshape, xorder);
 
-    for (Index i = 0; i < order; ++i)
+    for (Index i = 0; i < yorder; ++i)
         index[i] = 0;
 
-    for (Index i = 0; i < diff; ++i) {
-        bstrides[i] = 0;
-        shape[i] = ashape[i];
-    }
-
-    for (Index i = diff; i < order; ++i)
-        shape[i] = _imax(ashape[i], bshape[i - diff]);
-
-    _strides(bstrides + diff, bshape, lesser);
-    _strides(astrides, ashape, order);
-
-    Index size = _size(shape, order);
-
     for (Index i = 0; i < size; ++i) {
-        y[i] = f(a[_idot(index, astrides, order)], b[_idot(index, bstrides, order)]);
-        _increment(index, shape, order);
+        y[i] = f(y[i], x[_idot(index + diff, strides, xorder)]);
+        _increment(index, yshape, yorder);
     }
-}
-
-static void _binary(Scalar* restrict y, Scalar f(Scalar, Scalar),
-    const Scalar* restrict a, const Index* restrict ashape, Index aorder,
-    const Scalar* restrict b, const Index* restrict bshape, Index border)
-{
-    if (aorder < border)
-        _binary_sorted(y, f, b, bshape, border, a, ashape, aorder);
-    else
-        _binary_sorted(y, f, a, ashape, aorder, b, bshape, border);
 }
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef ONNC_OPERATOR_GENERIC_GEMM
-#define ONNC_OPERATOR_GENERIC_GEMM
+#ifndef ONNCRT_REAL_GEMM_H
+#define ONNCRT_REAL_GEMM_H
 
 static void _gemmABT(
     Scalar* restrict y, const Scalar* restrict a, const Scalar* restrict b,
@@ -27,6 +27,12 @@ static void _gemmAB(
                 y[i * cols + j] += alpha * a[i * istride + k * kstride] * b[k * cols + j];
 }
 
+/*!
+ * \brief Matrix multiplication
+ *
+ * This function performs `y += opa(a) * opb(b)` where `a` and `b` are matrices.
+ * If `op` is nonzero, its operand is viewed as transposed.
+ */
 static void _gemm(
     Scalar* restrict y, const Scalar* restrict a, const Scalar* restrict b,
     Scalar alpha, Index rows, Index cols, Index depth, int opa, int opb)
@@ -35,5 +41,4 @@ static void _gemm(
 }
 
 #endif
-// TODO: Consider conjugation when we have to support complex scalars
 // vim: ft=c

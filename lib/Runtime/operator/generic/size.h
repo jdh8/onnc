@@ -1,6 +1,10 @@
-#ifndef ONNC_OPERATOR_GENERIC_SIZE
-#define ONNC_OPERATOR_GENERIC_SIZE
-
+#ifndef ONNCRT_SIZE_H
+#define ONNCRT_SIZE_H
+/*!
+ * \brief Count elements in a tensor
+ *
+ * This function returns count of elements given shape of a tensor.
+ */
 static Index _size(const Index* shape, Index order)
 {
     Index result = 1;
