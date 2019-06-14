@@ -6,7 +6,7 @@ typedef int32_t Index;
 #include "generic/assign.h"
 #include "generic/binary.h"
 
-static float _sub(float a, float b)
+static float sub_(float a, float b)
 {
     return a - b;
 }
@@ -16,6 +16,6 @@ void ONNC_RUNTIME_sub_float(void* restrict context,
     const float* restrict B, int32_t Bdim, const int32_t* restrict Bshape,
     float* restrict C, int32_t Cdim, const int32_t* restrict Cshape)
 {
-    _assign(C, Cshape, Cdim, A, Ashape, Adim);
-    _binary(C, Cshape, Cdim, B, Bshape, Bdim, _sub);
+    assign_(C, Cshape, Cdim, A, Ashape, Adim);
+    binary_(C, Cshape, Cdim, B, Bshape, Bdim, sub_);
 }

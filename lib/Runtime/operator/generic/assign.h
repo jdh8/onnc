@@ -1,5 +1,5 @@
-#ifndef ONNCRT_ASSIGN_H
-#define ONNCRT_ASSIGN_H
+#ifndef ONNCRT_GENERIC_ASSIGN_H
+#define ONNCRT_GENERIC_ASSIGN_H
 
 #include "copy.h"
 #include "size.h"
@@ -16,27 +16,27 @@
  *      a  b  c  d;
  *      a  b  c  d]
  */
-static void _assign(Scalar* restrict y, const Index* restrict yshape, Index yorder,
+static void assign_(Scalar* restrict y, const Index* restrict yshape, Index yorder,
     const Scalar* restrict x, const Index* restrict xshape, Index xorder)
 {
     Index diff = yorder - xorder;
-    Index size = _size(yshape + diff, xorder);
-    Index count = _size(yshape, diff);
+    Index size = size_(yshape + diff, xorder);
+    Index count = size_(yshape, diff);
     Index strides[xorder];
     Index index[xorder];
 
-    _strides(strides, xshape, xorder);
+    strides_(strides, xshape, xorder);
 
     for (Index i = 0; i < xorder; ++i)
         index[i] = 0;
 
     for (Index i = 0; i < size; ++i) {
-        y[i] = x[_idot(index, strides, xorder)];
-        _increment(index, yshape + diff, xorder);
+        y[i] = x[idot_(index, strides, xorder)];
+        increment_(index, yshape + diff, xorder);
     }
 
     for (Index i = 1; i < count; ++i)
-        _copy(y + i * size, y, size);
+        copy_(y + i * size, y, size);
 }
 
 #endif

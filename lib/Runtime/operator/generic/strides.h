@@ -1,12 +1,12 @@
-#ifndef ONNCRT_STRIDES_H
-#define ONNCRT_STRIDES_H
+#ifndef ONNCRT_GENERIC_STRIDES_H
+#define ONNCRT_GENERIC_STRIDES_H
 /*!
  * \brief Inner product of vectors of indices
  *
  * This function computes data offset from a multidimensional index.
- * See _strides() for details.
+ * See strides_() for details.
  */
-static Index _idot(const Index* x, const Index* y, Index count)
+static Index idot_(const Index* x, const Index* y, Index count)
 {
     Index result = 0;
 
@@ -28,13 +28,13 @@ static Index _idot(const Index* x, const Index* y, Index count)
  *     { 1, 0, 1 }
  *     { 1, 0, 2 }
  */
-static void _increment(Index* restrict index, const Index* restrict shape, Index order)
+static void increment_(Index* restrict index, const Index* restrict shape, Index order)
 {
     Index end = order - 1;
 
     if (order > 0 && ++index[end] >= shape[end]) {
         index[end] = 0;
-        _increment(index, shape, end);
+        increment_(index, shape, end);
     }
 }
 
@@ -55,7 +55,7 @@ static void _increment(Index* restrict index, const Index* restrict shape, Index
  * broadcasting.  For example, the example array of strides still works if the
  * tensor is read as a 3xnx3x3x7 tensor.
  */
-static void _strides(Index* restrict result, const Index* restrict shape, Index order)
+static void strides_(Index* restrict result, const Index* restrict shape, Index order)
 {
     if (order > 0)
         result[order - 1] = 1;

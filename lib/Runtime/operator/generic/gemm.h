@@ -1,7 +1,7 @@
-#ifndef ONNCRT_REAL_GEMM_H
-#define ONNCRT_REAL_GEMM_H
+#ifndef ONNCRT_GENERIC_REAL_GEMM_H
+#define ONNCRT_GENERIC_REAL_GEMM_H
 
-static void _gemmABT(
+static void gemmABT_(
     Scalar* restrict y, const Scalar* restrict a, const Scalar* restrict b,
     Scalar alpha, Index rows, Index cols, Index depth, int op)
 {
@@ -14,7 +14,7 @@ static void _gemmABT(
                 y[i * cols + j] += alpha * a[i * istride + k * kstride] * b[j * depth + k];
 }
 
-static void _gemmAB(
+static void gemmAB_(
     Scalar* restrict y, const Scalar* restrict a, const Scalar* restrict b,
     Scalar alpha, Index rows, Index cols, Index depth, int op)
 {
@@ -33,11 +33,11 @@ static void _gemmAB(
  * This function performs `y += opa(a) * opb(b)` where `a` and `b` are matrices.
  * If `op` is nonzero, its operand is viewed as transposed.
  */
-static void _gemm(
+static void gemm_(
     Scalar* restrict y, const Scalar* restrict a, const Scalar* restrict b,
     Scalar alpha, Index rows, Index cols, Index depth, int opa, int opb)
 {
-    (opb ? _gemmABT : _gemmAB)(y, a, b, alpha, rows, cols, depth, opa);
+    (opb ? gemmABT_ : gemmAB_)(y, a, b, alpha, rows, cols, depth, opa);
 }
 
 #endif

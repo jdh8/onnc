@@ -18,10 +18,10 @@ void ONNC_RUNTIME_gemm_float(void* restrict context,
     int32_t cols = Yshape[1];
     int32_t depth = Ashape[!transA];
 
-    _assign(Y, Yshape, 2, C, Cshape, Cdim);
+    assign_(Y, Yshape, 2, C, Cshape, Cdim);
 
     for (int32_t i = 0; i < rows * cols; ++i)
         Y[i] *= beta;
 
-    _gemm(Y, A, B, alpha, rows, cols, depth, transA, transB);
+    gemm_(Y, A, B, alpha, rows, cols, depth, transA, transB);
 }
