@@ -1,329 +1,119 @@
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
-#include <skypat/skypat.h>
-#include <vector>
-
-#define restrict
+#define restrict __restrict__
 extern "C" {
-#include <onnc/Runtime/onnc-runtime.h>
+#include <onnc/Runtime/operator/transpose.h>
 }
-SKYPAT_F(Operator_Transpose, test_transpose_default) {
-  const float input_0[2][3][4] = {{{0.7101562023162842, 0.4070174992084503,
-                                    0.5255025625228882, 0.08626412600278854},
-                                   {0.28881677985191345, 0.3550712466239929,
-                                    0.002335176570340991, 0.11169818788766861},
-                                   {0.19350503385066986, 0.7652125954627991,
-                                    0.38236159086227417, 0.9372479915618896}},
-                                  {{0.6190007328987122, 0.8790335655212402,
-                                    0.5630118250846863, 0.4552254378795624},
-                                   {0.012512704357504845, 0.037144459784030914,
-                                    0.9999493956565857, 0.8090830445289612},
-                                   {0.7269040942192078, 0.38823720812797546,
-                                    0.7546349763870239, 0.7056916952133179}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[4][3][2];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {4, 3, 2};
-  const float answer_0[4][3][2] = {{{0.7101562023162842, 0.6190007328987122},
-                                    {0.28881677985191345, 0.012512704357504845},
-                                    {0.19350503385066986, 0.7269040942192078}},
-                                   {{0.4070174992084503, 0.8790335655212402},
-                                    {0.3550712466239929, 0.037144459784030914},
-                                    {0.7652125954627991, 0.38823720812797546}},
-                                   {{0.5255025625228882, 0.5630118250846863},
-                                    {0.002335176570340991, 0.9999493956565857},
-                                    {0.38236159086227417, 0.7546349763870239}},
-                                   {{0.08626412600278854, 0.4552254378795624},
-                                    {0.11169818788766861, 0.8090830445289612},
-                                    {0.9372479915618896, 0.7056916952133179}}};
-  const int32_t perm[] = {};
-  const int32_t number_of_perm = 0;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 4 * 3 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+#undef restrict
+
+#include <skypat/skypat.h>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <array>
+#include <valarray>
+#include <cstring>
+
+template<std::size_t order>
+static std::array<std::int32_t, order> compute_strides(const std::array<std::int32_t, order>& shape)
+{
+    std::array<std::int32_t, order> result;
+
+    if (order > 0)
+        result[order - 1] = 1;
+
+    for (std::size_t i = order - 1; i > 0; --i)
+        result[i - 1] = shape[i] * result[i];
+
+    for (std::size_t i = 0; i < order; ++i)
+        result[i] *= shape[i] > 1;
+
+    return result;
 }
 
-SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_0) {
-  const float input_0[2][3][4] = {{{0.017964323982596397, 0.5870859622955322,
-                                    0.5508228540420532, 0.0438665971159935},
-                                   {0.10798139870166779, 0.34236884117126465,
-                                    0.169571653008461, 0.864126980304718},
-                                   {0.3511107563972473, 0.8001262545585632,
-                                    0.42237570881843567, 0.18088048696517944}},
-                                  {{0.9844452142715454, 0.19700133800506592,
-                                    0.6755439043045044, 0.7789852023124695},
-                                   {0.011121303774416447, 0.0027693344745785,
-                                    0.24769601225852966, 0.9517470598220825},
-                                   {0.5693193674087524, 0.8870423436164856,
-                                    0.9028955698013306, 0.027417557314038277}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[2][3][4];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {2, 3, 4};
-  const float answer_0[2][3][4] = {
-      {{0.017964323982596397, 0.5870859622955322, 0.5508228540420532,
-        0.0438665971159935},
-       {0.10798139870166779, 0.34236884117126465, 0.169571653008461,
-        0.864126980304718},
-       {0.3511107563972473, 0.8001262545585632, 0.42237570881843567,
-        0.18088048696517944}},
-      {{0.9844452142715454, 0.19700133800506592, 0.6755439043045044,
-        0.7789852023124695},
-       {0.011121303774416447, 0.0027693344745785, 0.24769601225852966,
-        0.9517470598220825},
-       {0.5693193674087524, 0.8870423436164856, 0.9028955698013306,
-        0.027417557314038277}}};
-  const int32_t perm[] = {0, 1, 2};
-  const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 2 * 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+template<typename T>
+static std::valarray<T> range(std::size_t end)
+{
+    std::valarray<T> result(end);
+
+    for (std::size_t i = 0; i < end; ++i)
+        result[i] = i;
+
+    return result;
 }
 
-SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_1) {
-  const float input_0[2][3][4] = {{{0.017964323982596397, 0.5870859622955322,
-                                    0.5508228540420532, 0.0438665971159935},
-                                   {0.10798139870166779, 0.34236884117126465,
-                                    0.169571653008461, 0.864126980304718},
-                                   {0.3511107563972473, 0.8001262545585632,
-                                    0.42237570881843567, 0.18088048696517944}},
-                                  {{0.9844452142715454, 0.19700133800506592,
-                                    0.6755439043045044, 0.7789852023124695},
-                                   {0.011121303774416447, 0.0027693344745785,
-                                    0.24769601225852966, 0.9517470598220825},
-                                   {0.5693193674087524, 0.8870423436164856,
-                                    0.9028955698013306, 0.027417557314038277}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[2][4][3];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {2, 4, 3};
-  const float answer_0[2][4][3] = {
-      {{0.017964323982596397, 0.10798139870166779, 0.3511107563972473},
-       {0.5870859622955322, 0.34236884117126465, 0.8001262545585632},
-       {0.5508228540420532, 0.169571653008461, 0.42237570881843567},
-       {0.0438665971159935, 0.864126980304718, 0.18088048696517944}},
-      {{0.9844452142715454, 0.011121303774416447, 0.5693193674087524},
-       {0.19700133800506592, 0.0027693344745785, 0.8870423436164856},
-       {0.6755439043045044, 0.24769601225852966, 0.9028955698013306},
-       {0.7789852023124695, 0.9517470598220825, 0.027417557314038277}}};
-  const int32_t perm[] = {0, 2, 1};
-  const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 2 * 4 * 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+template<typename T, typename Container>
+static std::valarray<T> make_valarray(const Container& x)
+{
+    std::valarray<T> result(x.size());
+    std::copy(std::begin(x), std::end(x), std::begin(result));
+    return result;
 }
 
-SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_2) {
-  const float input_0[2][3][4] = {{{0.017964323982596397, 0.5870859622955322,
-                                    0.5508228540420532, 0.0438665971159935},
-                                   {0.10798139870166779, 0.34236884117126465,
-                                    0.169571653008461, 0.864126980304718},
-                                   {0.3511107563972473, 0.8001262545585632,
-                                    0.42237570881843567, 0.18088048696517944}},
-                                  {{0.9844452142715454, 0.19700133800506592,
-                                    0.6755439043045044, 0.7789852023124695},
-                                   {0.011121303774416447, 0.0027693344745785,
-                                    0.24769601225852966, 0.9517470598220825},
-                                   {0.5693193674087524, 0.8870423436164856,
-                                    0.9028955698013306, 0.027417557314038277}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[3][2][4];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {3, 2, 4};
-  const float answer_0[3][2][4] = {
-      {{0.017964323982596397, 0.5870859622955322, 0.5508228540420532,
-        0.0438665971159935},
-       {0.9844452142715454, 0.19700133800506592, 0.6755439043045044,
-        0.7789852023124695}},
-      {{0.10798139870166779, 0.34236884117126465, 0.169571653008461,
-        0.864126980304718},
-       {0.011121303774416447, 0.0027693344745785, 0.24769601225852966,
-        0.9517470598220825}},
-      {{0.3511107563972473, 0.8001262545585632, 0.42237570881843567,
-        0.18088048696517944},
-       {0.5693193674087524, 0.8870423436164856, 0.9028955698013306,
-        0.027417557314038277}}};
-  const int32_t perm[] = {1, 0, 2};
-  const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 3 * 2 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+template<typename T>
+static bool equal(const std::valarray<T>& x, const std::valarray<T>& y)
+{
+    return x.size() == y.size() && !std::memcmp(&x[0], &y[0], x.size() * sizeof(T));
 }
 
-SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_3) {
-  const float input_0[2][3][4] = {{{0.017964323982596397, 0.5870859622955322,
-                                    0.5508228540420532, 0.0438665971159935},
-                                   {0.10798139870166779, 0.34236884117126465,
-                                    0.169571653008461, 0.864126980304718},
-                                   {0.3511107563972473, 0.8001262545585632,
-                                    0.42237570881843567, 0.18088048696517944}},
-                                  {{0.9844452142715454, 0.19700133800506592,
-                                    0.6755439043045044, 0.7789852023124695},
-                                   {0.011121303774416447, 0.0027693344745785,
-                                    0.24769601225852966, 0.9517470598220825},
-                                   {0.5693193674087524, 0.8870423436164856,
-                                    0.9028955698013306, 0.027417557314038277}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[3][4][2];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {3, 4, 2};
-  const float answer_0[3][4][2] = {
-      {{0.017964323982596397, 0.9844452142715454},
-       {0.5870859622955322, 0.19700133800506592},
-       {0.5508228540420532, 0.6755439043045044},
-       {0.0438665971159935, 0.7789852023124695}},
-      {{0.10798139870166779, 0.011121303774416447},
-       {0.34236884117126465, 0.0027693344745785},
-       {0.169571653008461, 0.24769601225852966},
-       {0.864126980304718, 0.9517470598220825}},
-      {{0.3511107563972473, 0.5693193674087524},
-       {0.8001262545585632, 0.8870423436164856},
-       {0.42237570881843567, 0.9028955698013306},
-       {0.18088048696517944, 0.027417557314038277}}};
-  const int32_t perm[] = {1, 2, 0};
-  const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 3 * 4 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+/* FIXME We pass `permutation` by value because `ONNC_RUNTIME_transpose_float`
+ * takes (non-const) `int32_t*` as permutation list.  Discuss if changing to
+ * `const int32_t*` is possible.
+ */
+static void test_permutedims(
+    const std::valarray<float>& tensor,
+    std::valarray<std::int32_t> permutation,
+    const std::valarray<std::int32_t>& shape,
+    const std::valarray<std::size_t>& strides)
+{
+    using std::size_t;
+    using std::int32_t;
+
+    const std::valarray<size_t> permute = make_valarray<size_t>(permutation);
+    const std::valarray<int32_t> permuted_shape = shape[permute];
+    const std::valarray<size_t> permuted_strides = strides[permute];
+    const std::gslice transpose = { 0, make_valarray<size_t>(permuted_shape), permuted_strides };
+    const std::valarray<float> reference = tensor[transpose];
+
+    std::valarray<float> candidate(tensor.size());
+
+    ONNC_RUNTIME_transpose_float(nullptr,
+        &tensor[0], shape.size(), &shape[0],
+        &candidate[0], permuted_shape.size(), &permuted_shape[0],
+        &permutation[0], permutation.size()
+    );
+
+    EXPECT_TRUE(equal(reference, candidate));
 }
 
-SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_4) {
-  const float input_0[2][3][4] = {{{0.017964323982596397, 0.5870859622955322,
-                                    0.5508228540420532, 0.0438665971159935},
-                                   {0.10798139870166779, 0.34236884117126465,
-                                    0.169571653008461, 0.864126980304718},
-                                   {0.3511107563972473, 0.8001262545585632,
-                                    0.42237570881843567, 0.18088048696517944}},
-                                  {{0.9844452142715454, 0.19700133800506592,
-                                    0.6755439043045044, 0.7789852023124695},
-                                   {0.011121303774416447, 0.0027693344745785,
-                                    0.24769601225852966, 0.9517470598220825},
-                                   {0.5693193674087524, 0.8870423436164856,
-                                    0.9028955698013306, 0.027417557314038277}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[4][2][3];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {4, 2, 3};
-  const float answer_0[4][2][3] = {
-      {{0.017964323982596397, 0.10798139870166779, 0.3511107563972473},
-       {0.9844452142715454, 0.011121303774416447, 0.5693193674087524}},
-      {{0.5870859622955322, 0.34236884117126465, 0.8001262545585632},
-       {0.19700133800506592, 0.0027693344745785, 0.8870423436164856}},
-      {{0.5508228540420532, 0.169571653008461, 0.42237570881843567},
-       {0.6755439043045044, 0.24769601225852966, 0.9028955698013306}},
-      {{0.0438665971159935, 0.864126980304718, 0.18088048696517944},
-       {0.7789852023124695, 0.9517470598220825, 0.027417557314038277}}};
-  const int32_t perm[] = {2, 0, 1};
-  const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 4 * 2 * 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+template<typename... Args>
+static void test(Args... args)
+{
+    using std::size_t;
+    using std::int32_t;
+
+    const size_t order = sizeof...(Args);
+    std::array<int32_t, order> shape = { static_cast<int32_t>(args)... };
+    std::array<int32_t, order> strides = compute_strides(shape);
+    size_t size = std::accumulate(shape.begin(), shape.end(), static_cast<size_t>(1), std::multiplies<size_t>());
+
+    const std::gslice identity = { 0, make_valarray<size_t>(shape), make_valarray<size_t>(strides) };
+    const std::valarray<float> tensor = range<float>(size);
+    const std::valarray<float> candidate = tensor[identity];
+
+    EXPECT_TRUE(equal(tensor, candidate));
+
+    std::valarray<int32_t> permutation = range<int32_t>(order);
+
+    while (std::next_permutation(std::begin(permutation), std::end(permutation)))
+        test_permutedims(tensor, permutation, make_valarray<int32_t>(shape), make_valarray<size_t>(strides));
 }
 
-SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_5) {
-  const float input_0[2][3][4] = {{{0.017964323982596397, 0.5870859622955322,
-                                    0.5508228540420532, 0.0438665971159935},
-                                   {0.10798139870166779, 0.34236884117126465,
-                                    0.169571653008461, 0.864126980304718},
-                                   {0.3511107563972473, 0.8001262545585632,
-                                    0.42237570881843567, 0.18088048696517944}},
-                                  {{0.9844452142715454, 0.19700133800506592,
-                                    0.6755439043045044, 0.7789852023124695},
-                                   {0.011121303774416447, 0.0027693344745785,
-                                    0.24769601225852966, 0.9517470598220825},
-                                   {0.5693193674087524, 0.8870423436164856,
-                                    0.9028955698013306, 0.027417557314038277}}};
-  const int32_t input_0_ndim = 3;
-  const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[4][3][2];
-  const int32_t output_0_ndim = 3;
-  const int32_t output_0_dims[] = {4, 3, 2};
-  const float answer_0[4][3][2] = {
-      {{0.017964323982596397, 0.9844452142715454},
-       {0.10798139870166779, 0.011121303774416447},
-       {0.3511107563972473, 0.5693193674087524}},
-      {{0.5870859622955322, 0.19700133800506592},
-       {0.34236884117126465, 0.0027693344745785},
-       {0.8001262545585632, 0.8870423436164856}},
-      {{0.5508228540420532, 0.6755439043045044},
-       {0.169571653008461, 0.24769601225852966},
-       {0.42237570881843567, 0.9028955698013306}},
-      {{0.0438665971159935, 0.7789852023124695},
-       {0.864126980304718, 0.9517470598220825},
-       {0.18088048696517944, 0.027417557314038277}}};
-  const int32_t perm[] = {2, 1, 0};
-  const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 4 * 3 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+SKYPAT_F(Operator_Transpose, non_broadcast)
+{
+    test(4);
+    test(2, 5);
+    test(3, 1);
+    test(1, 2, 3);
+    test(4, 2, 3);
+    test(2, 3, 1, 2);
+    test(3, 1, 3, 3, 7);
 }
