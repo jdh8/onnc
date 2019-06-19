@@ -79,7 +79,7 @@ SKYPAT_F(Operator_Pow, test_pow) {
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {3, 4, 5};
   const float answer_0[3][4][5] = {
-      {{inf, 1.0, 0.6013013124465942, 0.7942890524864197, 0.1614888608455658},
+      {{HUGE_VALF, 1.0, 0.6013013124465942, 0.7942890524864197, 0.1614888608455658},
        {40.887184143066406, 0.04810509458184242, 0.024549566209316254,
         0.0938354879617691, 0.0015536256833001971},
        {0.1277957558631897, 69.28652954101562, 0.8712594509124756,
@@ -120,16 +120,14 @@ SKYPAT_F(Operator_Pow, test_pow_bcast_scalar) {
   const float input_0[3] = {1.0, 2.0, 3.0};
   const int32_t input_0_ndim = 1;
   const int32_t input_0_dims[] = {3};
-  const float input_1 = {};
-  const int32_t input_1_ndim = 0;
-  const int32_t input_1_dims[] = {};
+  const float input_1 = 2.0;
   float output_0[3];
   const int32_t output_0_ndim = 1;
   const int32_t output_0_dims[] = {3};
   const float answer_0[3] = {1.0, 4.0, 9.0};
-  ONNC_RUNTIME_pow_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                         (float *)input_1, input_1_ndim, input_1_dims,
-                         (float *)output_0, output_0_ndim, output_0_dims);
+  ONNC_RUNTIME_pow_float(NULL, input_0, input_0_ndim, input_0_dims,
+                         &input_1, 0, NULL,
+                         output_0, output_0_ndim, output_0_dims);
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3; ++i) {
