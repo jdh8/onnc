@@ -1,9 +1,8 @@
-#ifndef ONNCRT_GENERIC_ASSIGN_H
-#define ONNCRT_GENERIC_ASSIGN_H
+#ifndef ONNC_ASSIGN
 
-#include "copy.h"
 #include "size.h"
 #include "strides.h"
+#include <string.h>
 /*!
  * \brief Tensor assignment
  *
@@ -16,28 +15,34 @@
  *      a  b  c  d;
  *      a  b  c  d]
  */
-static void assign_(Scalar* restrict y, const Index* restrict yshape, Index yorder,
-    const Scalar* restrict x, const Index* restrict xshape, Index xorder)
-{
-    Index diff = yorder - xorder;
-    Index size = size_(yshape + diff, xorder);
-    Index count = size_(yshape, diff);
-    Index strides[xorder];
-    Index index[xorder];
-
-    strides_(strides, xshape, xorder);
-
-    for (Index i = 0; i < xorder; ++i)
-        index[i] = 0;
-
-    for (Index i = 0; i < size; ++i) {
-        y[i] = x[idot_(index, strides, xorder)];
-        increment_(index, yshape + diff, xorder);
-    }
-
-    for (Index i = 1; i < count; ++i)
-        copy_(y + i * size, y, size);
-}
+#define ONNC_ASSIGN(SCALAR, y, yshape, yorder, x, xshape, xorder) do { \
+    typedef SCALAR Scalar;                                             \
+    typedef ONNC_INDEX_TYPE Index;                                     \
+                                                                       \
+    Scalar* restrict _y = y;                                           \
+    const Scalar* restrict _x = x;                                     \
+    const Index* restrict _yshape = yshape;                            \
+    const Index* restrict _xshape = xshape;                            \
+    Index _xorder = xorder;                                            \
+    Index _diff = (Index)(yorder) - _xorder;                           \
+    Index _size = onnc_size(_yshape + _diff, _xorder);                 \
+    Index _count = onnc_size(_yshape, _diff);                          \
+    Index _strides[_xorder];                                           \
+    Index _index[_xorder];                                             \
+                                                                       \
+    onnc_strides(_strides, _xshape, _xorder);                          \
+                                                                       \
+    for (Index _i = 0; _i < _xorder; ++_i)                             \
+        _index[_i] = 0;                                                \
+                                                                       \
+    for (Index _i = 0; _i < _size; ++_i) {                             \
+        _y[_i] = _x[onnc_idot(_index, _strides, _xorder)];             \
+        onnc_increment(_index, _yshape + _diff, _xorder);              \
+    }                                                                  \
+                                                                       \
+    for (Index _i = 1; _i < _count; ++_i)                              \
+        memcpy(_y + _i * _size, _y, _size * sizeof(Scalar));           \
+} while (0)
 
 #endif
 // vim: ft=c

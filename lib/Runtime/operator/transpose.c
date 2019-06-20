@@ -1,7 +1,5 @@
 #include <stdint.h>
-
-typedef float Scalar;
-typedef int32_t Index;
+typedef int32_t ONNC_INDEX_TYPE;
 
 #include "generic/transpose.h"
 
@@ -10,5 +8,5 @@ void ONNC_RUNTIME_transpose_float(void* restrict context,
     float* restrict Y, int32_t Ydim, const int32_t* restrict Yshape,
     const int32_t* restrict permute, int32_t dim)
 {
-    transpose_(Y, X, permute, Xshape, Xdim);
+    ONNC_TRANSPOSE(float, Y, X, permute, Xshape, Xdim);
 }

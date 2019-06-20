@@ -1,11 +1,8 @@
 #include <stdint.h>
-
-typedef float Scalar;
-typedef int32_t Index;
+typedef int32_t ONNC_INDEX_TYPE;
 
 #include "generic/assign.h"
 #include "generic/gemm.h"
-#include "generic/size.h"
 
 void ONNC_RUNTIME_gemm_float(void* restrict context,
     const float* restrict A, int32_t Adim, const int32_t* restrict Ashape,
@@ -18,10 +15,10 @@ void ONNC_RUNTIME_gemm_float(void* restrict context,
     int32_t cols = Yshape[1];
     int32_t depth = Ashape[!transA];
 
-    assign_(Y, Yshape, 2, C, Cshape, Cdim);
+    ONNC_ASSIGN(float, Y, Yshape, 2, C, Cshape, Cdim);
 
     for (int32_t i = 0; i < rows * cols; ++i)
         Y[i] *= beta;
 
-    gemm_(Y, A, B, alpha, rows, cols, depth, transA, transB);
+    ONNC_GEMM(float, Y, A, B, alpha, rows, cols, depth, transA, transB);
 }

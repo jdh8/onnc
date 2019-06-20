@@ -1,7 +1,5 @@
 #include <stdint.h>
-
-typedef float Scalar;
-typedef int32_t Index;
+typedef int32_t ONNC_INDEX_TYPE;
 
 #include "generic/assign.h"
 #include "generic/binary.h"
@@ -16,6 +14,6 @@ void ONNC_RUNTIME_add_float(void* restrict context,
     const float* restrict B, int32_t Bdim, const int32_t* restrict Bshape,
     float* restrict C, int32_t Cdim, const int32_t* restrict Cshape)
 {
-    assign_(C, Cshape, Cdim, A, Ashape, Adim);
-    binary_(C, Cshape, Cdim, B, Bshape, Bdim, add_);
+    ONNC_ASSIGN(float, C, Cshape, Cdim, A, Ashape, Adim);
+    ONNC_BINARY(float, C, Cshape, Cdim, B, Bshape, Bdim, add_);
 }

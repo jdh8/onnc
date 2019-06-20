@@ -1,5 +1,4 @@
-#ifndef ONNCRT_GENERIC_BINARY_H
-#define ONNCRT_GENERIC_BINARY_H
+#ifndef ONNC_BINARY
 
 #include "size.h"
 #include "strides.h"
@@ -9,24 +8,32 @@
  * This function performs `y = f.(y, x)` where `x` is broadcastable to `y`.
  * For example, if `f = +`, then `y .+= x` is performed.
  */
-static void binary_(Scalar* restrict y, const Index* restrict yshape, Index yorder,
-    const Scalar* restrict x, const Index* restrict xshape, Index xorder, Scalar f(Scalar, Scalar))
-{
-    Index diff = yorder - xorder;
-    Index size = size_(yshape, yorder);
-    Index index[yorder];
-    Index strides[xorder];
-
-    strides_(strides, xshape, xorder);
-
-    for (Index i = 0; i < yorder; ++i)
-        index[i] = 0;
-
-    for (Index i = 0; i < size; ++i) {
-        y[i] = f(y[i], x[idot_(index + diff, strides, xorder)]);
-        increment_(index, yshape, yorder);
-    }
-}
+#define ONNC_BINARY(SCALAR, y, yshape, yorder, x, xshape, xorder, f) do {     \
+    typedef SCALAR Scalar;                                                    \
+    typedef ONNC_INDEX_TYPE Index;                                            \
+                                                                              \
+    Scalar* restrict _y = y;                                                  \
+    const Scalar* restrict _x = x;                                            \
+    const Index* restrict _yshape = yshape;                                   \
+    const Index* restrict _xshape = xshape;                                   \
+    Index _yorder = yorder;                                                   \
+    Index _xorder = xorder;                                                   \
+                                                                              \
+    Index _diff = _yorder - _xorder;                                          \
+    Index _size = onnc_size(_yshape, _yorder);                                \
+    Index _index[_yorder];                                                    \
+    Index _strides[_xorder];                                                  \
+                                                                              \
+    onnc_strides(_strides, _xshape, _xorder);                                 \
+                                                                              \
+    for (Index _i = 0; _i < _yorder; ++_i)                                    \
+       _index[_i] = 0;                                                        \
+                                                                              \
+    for (Index _i = 0; _i < _size; ++_i) {                                    \
+        _y[_i] = f(_y[_i], _x[onnc_idot(_index + _diff, _strides, _xorder)]); \
+        onnc_increment(_index, _yshape, _yorder);                             \
+    }                                                                         \
+} while (0)
 
 #endif
 // vim: ft=c

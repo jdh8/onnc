@@ -1,13 +1,17 @@
-#ifndef ONNCRT_GENERIC_STRIDES_H
-#define ONNCRT_GENERIC_STRIDES_H
+#ifndef ONNC_RUNTIME_STRIDES_H
+#define ONNC_RUNTIME_STRIDES_H
 /*!
  * \brief Inner product of vectors of indices
  *
  * This function computes data offset from a multidimensional index.
- * See strides_() for details.
+ * See onnc_strides() for details.
  */
-static Index idot_(const Index* x, const Index* y, Index count)
+static ONNC_INDEX_TYPE onnc_idot(
+    const ONNC_INDEX_TYPE* x,
+    const ONNC_INDEX_TYPE* y,
+    ONNC_INDEX_TYPE count)
 {
+    typedef ONNC_INDEX_TYPE Index;
     Index result = 0;
 
     for (Index i = 0; i < count; ++i)
@@ -28,13 +32,17 @@ static Index idot_(const Index* x, const Index* y, Index count)
  *     { 1, 0, 1 }
  *     { 1, 0, 2 }
  */
-static void increment_(Index* restrict index, const Index* restrict shape, Index order)
+static void onnc_increment(
+    ONNC_INDEX_TYPE* restrict index,
+    const ONNC_INDEX_TYPE* restrict shape,
+    ONNC_INDEX_TYPE order)
 {
+    typedef ONNC_INDEX_TYPE Index;
     Index end = order - 1;
 
     if (order > 0 && ++index[end] >= shape[end]) {
         index[end] = 0;
-        increment_(index, shape, end);
+        onnc_increment(index, shape, end);
     }
 }
 
@@ -55,8 +63,13 @@ static void increment_(Index* restrict index, const Index* restrict shape, Index
  * broadcasting.  For example, the example array of strides still works if the
  * tensor is read as a 3xnx3x3x7 tensor.
  */
-static void strides_(Index* restrict result, const Index* restrict shape, Index order)
+static void onnc_strides(
+    ONNC_INDEX_TYPE* restrict result,
+    const ONNC_INDEX_TYPE* restrict shape,
+    ONNC_INDEX_TYPE order)
 {
+    typedef ONNC_INDEX_TYPE Index;
+
     if (order > 0)
         result[order - 1] = 1;
 
