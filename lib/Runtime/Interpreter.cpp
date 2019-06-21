@@ -3548,31 +3548,36 @@ void BasicInterpreter::visit(Sub& pOp) {
 
 void BasicInterpreter::visit(Sum& pOp) {
   // Prepare input
-  int32_t input_data_0_ntensor = pOp.getNumOfInputs() - 0;
-  void *input_data_0[input_data_0_ntensor];
-  for (int i = 0; i < input_data_0_ntensor; ++i) input_data_0[i] = m_ATable[pOp.getInput(0 + i)];
-  int32_t input_data_0_ndim[input_data_0_ntensor]; // FIXME: = input_data_0_v->sizes().size();
-  int32_t *input_data_0_dims[input_data_0_ntensor]; // FIXME: [input_data_0_ndim[0]];
-  // FIXME: for (int i = 0; i < input_data_0_ndim; ++i) input_data_0_dims[i] = input_data_0_v->sizes()[i].dim;
-  // Prepare output
-  Tensor *output_sum_t = pOp.getOutput(0);
-  void *output_sum = m_ATable[output_sum_t];
-  int32_t output_sum_ndim = output_sum_t->getNumOfDimensions();
-  int32_t output_sum_dims[output_sum_ndim];
-  for (int i = 0; i < output_sum_ndim; ++i) output_sum_dims[i] = output_sum_t->dimension(i);
-  // Prepare attributes
-  
+  int32_t count = pOp.getNumOfInputs();
+  Tensor* tensors[count];
+  const float* data[count];
+  int32_t ndims[count];
+  std::vector<int32_t> vectors[count];
+  const int32_t* shapes[count];
 
+  for (int32_t i = 0; i < count; ++i) {
+    tensors[i] = pOp.getInput(i);
+    data[i] = static_cast<const float*>(m_ATable[tensors[i]]);
+    ndims[i] = tensors[i]->getNumOfDimensions();
+
+    const auto& dimensions = tensors[i]->getDimensions();
+    vectors[i].assign(dimensions.begin(), dimensions.end());
+    shapes[i] = vectors[i].data();
+  }
+
+  // Prepare output
+  Tensor* tensor = pOp.getOutput(0);
+  float* buffer = static_cast<float*>(m_ATable[tensor]);
+  int32_t ndim = tensor->getNumOfDimensions();
+  int32_t shape[ndim];
+
+  for (int i = 0; i < ndim; ++i)
+    shape[i] = tensor->dimension(i);
+  
   // Call to Runtime
-  ONNC_RUNTIME_sum_float(
-    m_pContext
-    , reinterpret_cast<float **>(input_data_0)
-    , input_data_0_ntensor
-    , input_data_0_ndim, input_data_0_dims
-    , reinterpret_cast<float *>(output_sum)
-    , output_sum_ndim, output_sum_dims
-    
-  );
+  ONNC_RUNTIME_sum_float(m_pContext,
+    data, count, ndims, shapes,
+    buffer, ndim, shape);
 };
 
 
