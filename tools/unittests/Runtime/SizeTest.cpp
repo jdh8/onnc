@@ -15,15 +15,9 @@ SKYPAT_F(Operator_Size, test_size_example) {
   float output_0;
   const int32_t output_0_ndim = 0;
   const int32_t output_0_dims[] = {};
-  const float answer_0 = {};
   ONNC_RUNTIME_size_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                          (float *)output_0, output_0_ndim, output_0_dims);
-  bool is_correct;
-  is_correct = true;
-  if (*output_0 != *answer_0) {
-    is_correct = false;
-  }
-  ASSERT_TRUE(is_correct);
+                          &output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(output_0 == 2 * 3);
 }
 
 SKYPAT_F(Operator_Size, test_size) {
@@ -57,13 +51,7 @@ SKYPAT_F(Operator_Size, test_size) {
   float output_0;
   const int32_t output_0_ndim = 0;
   const int32_t output_0_dims[] = {};
-  const float answer_0 = {};
   ONNC_RUNTIME_size_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                          (float *)output_0, output_0_ndim, output_0_dims);
-  bool is_correct;
-  is_correct = true;
-  if (*output_0 != *answer_0) {
-    is_correct = false;
-  }
-  ASSERT_TRUE(is_correct);
+                          &output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(output_0 == 3 * 4 * 5);
 }
