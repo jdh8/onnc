@@ -1,6 +1,8 @@
-#include <onnc/Runtime/operator/conv.h>
-
 #include <stdint.h>
+typedef int32_t ONNC_INDEX_TYPE;
+#include "generic/default.h"
+
+#include <onnc/Runtime/operator/conv.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -107,19 +109,34 @@ void ONNC_RUNTIME_conv_float(
   ,float * restrict output_Y
   ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
   ,const char * restrict auto_pad
-  ,int32_t * restrict dilations
+  ,int32_t * restrict given_dilations
   ,int32_t number_of_dilations
   ,int32_t group
   ,int32_t * restrict kernel_shape
   ,int32_t number_of_kernel_shape
-  ,int32_t * restrict pads
+  ,int32_t * restrict given_pads
   ,int32_t number_of_pads
-  ,int32_t * restrict strides
+  ,int32_t * restrict given_strides
   ,int32_t number_of_strides
 ) {
     int32_t M = input_W_dims[0];
     int32_t C = input_W_dims[1];
     int32_t ndim = input_X_ndim;
+
+    if (group <= 0)
+      group = 1;
+
+    if (input_B_ndim <= 0)
+      input_B = NULL;
+
+    int32_t order = ndim - 2;
+    int32_t pads[2 * order];
+    int32_t strides[order];
+    int32_t dilations[order];
+
+    onnc_default(pads, 2 * order, given_pads, number_of_pads, 0);
+    onnc_default(strides, order, given_strides, number_of_strides, 1);
+    onnc_default(dilations, order, given_dilations, 0, 1);
 
     if (ndim == 4) {
       typedef const float (*input_tensor_type )[input_X_dims[1] ][input_X_dims[2] ][input_X_dims[3] ];
