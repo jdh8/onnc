@@ -1,8 +1,5 @@
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
 #include <skypat/skypat.h>
-#include <vector>
+#include <cstring>
 
 #define restrict
 extern "C" {
@@ -48,15 +45,8 @@ SKYPAT_F(Operator_Conv, test_basic_conv_with_padding) {
       (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
       number_of_kernel_shape, (int32_t *)pads, number_of_pads,
       (int32_t *)strides, number_of_strides);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 1 * 1 * 5 * 5; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_FALSE(std::memcmp(output_0, answer_0, 1 * 1 * 5 * 5 * sizeof(float)));
 }
 
 SKYPAT_F(Operator_Conv, test_basic_conv_without_padding) {
@@ -96,15 +86,8 @@ SKYPAT_F(Operator_Conv, test_basic_conv_without_padding) {
       (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
       number_of_kernel_shape, (int32_t *)pads, number_of_pads,
       (int32_t *)strides, number_of_strides);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 1 * 1 * 3 * 3; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_FALSE(std::memcmp(output_0, answer_0, 1 * 1 * 3 * 3 * sizeof(float)));
 }
 
 SKYPAT_F(Operator_Conv, test_conv_with_strides_padding) {
@@ -148,15 +131,8 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_padding) {
       (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
       number_of_kernel_shape, (int32_t *)pads, number_of_pads,
       (int32_t *)strides, number_of_strides);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 1 * 1 * 4 * 3; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_FALSE(std::memcmp(output_0, answer_0, 1 * 1 * 4 * 3 * sizeof(float)));
 }
 
 SKYPAT_F(Operator_Conv, test_conv_with_strides_no_padding) {
@@ -198,15 +174,8 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_no_padding) {
       (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
       number_of_kernel_shape, (int32_t *)pads, number_of_pads,
       (int32_t *)strides, number_of_strides);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 1 * 1 * 3 * 2; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_FALSE(std::memcmp(output_0, answer_0, 1 * 1 * 3 * 2 * sizeof(float)));
 }
 
 SKYPAT_F(Operator_Conv, test_conv_with_strides_and_asymmetric_padding) {
@@ -248,13 +217,6 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_and_asymmetric_padding) {
       (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
       number_of_kernel_shape, (int32_t *)pads, number_of_pads,
       (int32_t *)strides, number_of_strides);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 1 * 1 * 4 * 2; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_FALSE(std::memcmp(output_0, answer_0, 1 * 1 * 4 * 2 * sizeof(float)));
 }
