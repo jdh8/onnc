@@ -134,9 +134,9 @@ void ONNC_RUNTIME_conv_float(
     int32_t strides[order];
     int32_t dilations[order];
 
-    onnc_default(pads, 2 * order, given_pads, number_of_pads, 0);
-    onnc_default(strides, order, given_strides, number_of_strides, 1);
-    onnc_default(dilations, order, given_dilations, 0, 1);
+    ONNC_DEFAULT_FILL(int32_t, pads, number_of_pads ? given_pads : NULL, 2 * order, 0);
+    ONNC_DEFAULT_FILL(int32_t, strides, number_of_strides ? given_strides : NULL, order, 1);
+    ONNC_DEFAULT_FILL(int32_t, dilations, number_of_dilations ? given_dilations : NULL, order, 1);
 
     if (ndim == 4) {
       typedef const float (*input_tensor_type )[input_X_dims[1] ][input_X_dims[2] ][input_X_dims[3] ];

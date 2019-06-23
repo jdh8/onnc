@@ -1,22 +1,22 @@
-#ifndef ONNC_RUNTIME_DEFAULT_H
-#define ONNC_RUNTIME_DEFAULT_H
-
-static void onnc_default(
-    ONNC_INDEX_TYPE* restrict destination, ONNC_INDEX_TYPE needed,
-    const ONNC_INDEX_TYPE* restrict source, ONNC_INDEX_TYPE provided,
-    ONNC_INDEX_TYPE fill)
-{
-    typedef ONNC_INDEX_TYPE Index;
-    
-    if (provided > needed)
-        provided = needed;
-
-    for (Index i = 0; i < provided; ++i)
-        destination[i] = source[i];
-
-    for (Index i = provided; i < needed; ++i)
-        destination[i] = fill;
-}
+#ifndef ONNC_DEFAULT_FILL
+/*!
+ * \brief Filling default arguments
+ *
+ * The destination points to a `SCALAR[count]`.  It is copied from
+ * non-null source or filled with a constant value.
+ */
+#define ONNC_DEFAULT_FILL(SCALAR, destination, source, count, fill) do { \
+    typedef SCALAR Scalar;                                               \
+    typedef ONNC_INDEX_TYPE Index;                                       \
+                                                                         \
+    Scalar* restrict _destination = destination;                         \
+    const Scalar* restrict _source = source;                             \
+    Scalar _fill = fill;                                                 \
+    Index _count = count;                                                \
+                                                                         \
+    for (Index _i = 0; _i < _count; ++_i)                                \
+        _destination[_i] = _source ? _source[_i] : _fill;                \
+} while (0)
 
 #endif
 // vim: ft=c

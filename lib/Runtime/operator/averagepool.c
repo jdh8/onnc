@@ -69,8 +69,8 @@ void ONNC_RUNTIME_averagepool_float(
   int32_t pads[2 * order];
   int32_t strides[order];
 
-  onnc_default(pads, 2 * order, given_pads, number_of_pads, 0);
-  onnc_default(strides, order, given_strides, number_of_strides, 1);
+  ONNC_DEFAULT_FILL(int32_t, pads, number_of_pads ? given_pads : NULL, 2 * order, 0);
+  ONNC_DEFAULT_FILL(int32_t, strides, number_of_strides ? given_strides : NULL, order, 1);
 
   // TODO auto_pad
   int64_t size = 1;
