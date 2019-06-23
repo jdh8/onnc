@@ -43,7 +43,7 @@ SKYPAT_F(Operator_BatchNormalization, test_batchnorm_example) {
   const int32_t output_4_ndim = 0;
   const int32_t output_4_dims[] = {};
   const float momentum = 0;
-  const float epsilon = 0;
+  const float epsilon = 1e-5f;
   const int32_t spatial = 0;
   ONNC_RUNTIME_batchnormalization_float(
       NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
