@@ -1,51 +1,40 @@
-#include <onnc/Runtime/operator/batchnormalization.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
+
+#include "generic/size.h"
 #include <math.h>
 
-void ONNC_RUNTIME_batchnormalization_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
-  ,const float * restrict input_scale
-  ,int32_t input_scale_ndim, const int32_t * restrict input_scale_dims
-  ,const float * restrict input_B
-  ,int32_t input_B_ndim, const int32_t * restrict input_B_dims
-  ,const float * restrict input_mean
-  ,int32_t input_mean_ndim, const int32_t * restrict input_mean_dims
-  ,const float * restrict input_var
-  ,int32_t input_var_ndim, const int32_t * restrict input_var_dims
-  ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
-  ,float * restrict output_mean
-  ,int32_t output_mean_ndim, const int32_t * restrict output_mean_dims
-  ,float * restrict output_var
-  ,int32_t output_var_ndim, const int32_t * restrict output_var_dims
-  ,float * restrict output_saved_mean
-  ,int32_t output_saved_mean_ndim, const int32_t * restrict output_saved_mean_dims
-  ,float * restrict output_saved_var
-  ,int32_t output_saved_var_ndim, const int32_t * restrict output_saved_var_dims
-  ,float epsilon
-  ,float momentum
-  ,int32_t spatial
-) {
-  // Preparation
-  int32_t xN = input_X_dims[0], xC = input_X_dims[1];
-  // TODO: spatial
-  int32_t strideSize = 1;
-  for(int32_t i = 2; i < input_X_ndim; ++i){
-    strideSize *= input_X_dims[i];
-  }
+void ONNC_RUNTIME_batchnormalization_float(void* restrict context,
+    const float* restrict X, int32_t Xndim, const int32_t* restrict Xshape,
+    const float* restrict scale, int32_t scale_ndim, const int32_t* restrict scale_shape,
+    const float* restrict B, int32_t Bndim, const int32_t* restrict Bshape,
+    const float* restrict mean, int32_t mean_ndim, const int32_t* restrict mean_shape,
+    const float* restrict var, int32_t var_ndim, const int32_t* restrict var_shape,
+    float* restrict Y, int32_t Yndim, const int32_t* restrict Yshape,
+    float* restrict running_mean, int32_t running_mean_ndim, const int32_t* restrict running_mean_shape,
+    float* restrict running_var, int32_t running_var_ndim, const int32_t* restrict running_var_shape,
+    float* restrict saved_mean, int32_t saved_mean_ndim, const int32_t* restrict saved_mean_shape,
+    float* restrict saved_var, int32_t saved_var_ndim, const int32_t* restrict saved_var_shape,
+    float epsilon, float momentum, int32_t spatial)
+{
+    int32_t batches = Xshape[0];
+    int32_t channels = Xshape[1];
+    int32_t pixels = onnc_size(Xshape + 2, Xndim - 2);
 
-  for(int32_t iN = 0; iN < xN; ++iN){
-    for(int32_t iC = 0; iC < xC; ++iC){
-      const float *pX = input_X + iN * xC * strideSize + iC * strideSize;
-      float *pY = output_Y + iN * xC * strideSize + iC * strideSize;
-      // Output
-      for(int32_t i = 0; i < strideSize; ++i){
-        pY[i] = input_scale[iC] * (pX[i] - input_mean[iC]) / sqrtf(input_var[iC] + epsilon) + input_B[iC];
-      }
+    float coeffs[channels];
+    float shifts[channels];
+
+    for (int32_t j = 0; j < channels; ++j) {
+        coeffs[j] = scale[j] / sqrtf(var[j] + epsilon);
+        shifts[j] = B[j] - mean[j] * coeffs[j];
     }
-  }
+
+    for (int32_t i = 0; i < batches; ++i) {
+        for (int32_t j = 0; j < channels; ++j) {
+            for (int32_t k = 0; k < pixels; ++k) {
+                int32_t offset = (i * channels + j) * pixels + k;
+                Y[offset] = coeffs[j] * X[offset] + shifts[j];
+            }
+        }
+    }
 }
