@@ -40,13 +40,11 @@ void ONNC_RUNTIME_batchnormalization_float(
 
   for(int32_t iN = 0; iN < xN; ++iN){
     for(int32_t iC = 0; iC < xC; ++iC){
-      const float *pIMean = input_mean + iN * xC;
-      const float *pIVariance = input_var + iN * xC;
       const float *pX = input_X + iN * xC * strideSize + iC * strideSize;
       float *pY = output_Y + iN * xC * strideSize + iC * strideSize;
       // Output
       for(int32_t i = 0; i < strideSize; ++i){
-        pY[i] = input_scale[iC] * (pX[i] - pIMean[iC]) / sqrtf(pIVariance[iC] + epsilon) + input_B[iC];
+        pY[i] = input_scale[iC] * (pX[i] - input_mean[iC]) / sqrtf(input_var[iC] + epsilon) + input_B[iC];
       }
     }
   }
