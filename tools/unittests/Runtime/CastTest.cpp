@@ -30,7 +30,7 @@ SKYPAT_F(Operator_Cast, test_cast_FLOAT_to_FLOAT16) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -62,7 +62,7 @@ SKYPAT_F(Operator_Cast, test_cast_FLOAT_to_DOUBLE) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -90,7 +90,7 @@ SKYPAT_F(Operator_Cast, test_cast_FLOAT16_to_FLOAT) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -118,7 +118,7 @@ SKYPAT_F(Operator_Cast, test_cast_FLOAT16_to_DOUBLE) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -150,7 +150,7 @@ SKYPAT_F(Operator_Cast, test_cast_DOUBLE_to_FLOAT) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -180,7 +180,7 @@ SKYPAT_F(Operator_Cast, test_cast_DOUBLE_to_FLOAT16) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

@@ -44,7 +44,7 @@ SKYPAT_F(Operator_Reshape, test_reshape_reordered_dims) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 4 * 2 * 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -89,7 +89,7 @@ SKYPAT_F(Operator_Reshape, test_reshape_reduced_dims) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 8; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -137,7 +137,7 @@ SKYPAT_F(Operator_Reshape, test_reshape_extended_dims) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 2 * 2 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -181,7 +181,7 @@ SKYPAT_F(Operator_Reshape, test_reshape_one_dim) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 24; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -228,7 +228,7 @@ SKYPAT_F(Operator_Reshape, test_reshape_negative_dim) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 6 * 2 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

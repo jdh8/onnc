@@ -72,7 +72,7 @@ SKYPAT_F(Operator_Unsqueeze, test_unsqueeze) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

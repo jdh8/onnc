@@ -111,7 +111,7 @@ SKYPAT_F(Operator_Flatten, test_flatten_axis0) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 120; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -222,7 +222,7 @@ SKYPAT_F(Operator_Flatten, test_flatten_axis1) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 2 * 60; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -335,7 +335,7 @@ SKYPAT_F(Operator_Flatten, test_flatten_axis2) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 6 * 20; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -454,7 +454,7 @@ SKYPAT_F(Operator_Flatten, test_flatten_axis3) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 24 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -577,7 +577,7 @@ SKYPAT_F(Operator_Flatten, test_flatten_default_axis) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 5 * 24; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

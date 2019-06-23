@@ -59,7 +59,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 5 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -107,7 +107,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose_1d) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -231,7 +231,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose_3d) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 5 * 6 * 7; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -301,7 +301,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose_output_shape) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 10 * 8; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -371,7 +371,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose_pad) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 10 * 8; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -441,7 +441,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose_kernel_shape) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 10 * 8; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -504,7 +504,7 @@ SKYPAT_F(Operator_ConvTranspose, test_convtranspose_pads) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 2 * 7 * 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

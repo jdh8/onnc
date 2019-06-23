@@ -24,7 +24,7 @@ SKYPAT_F(Operator_Clip, test_clip_example) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -93,7 +93,7 @@ SKYPAT_F(Operator_Clip, test_clip) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -117,7 +117,7 @@ SKYPAT_F(Operator_Clip, test_clip_inbounds) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -141,7 +141,7 @@ SKYPAT_F(Operator_Clip, test_clip_outbounds) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -165,7 +165,7 @@ SKYPAT_F(Operator_Clip, test_clip_splitbounds) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -226,7 +226,7 @@ SKYPAT_F(Operator_Clip, test_clip_default_min) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -289,7 +289,7 @@ SKYPAT_F(Operator_Clip, test_clip_default_max) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -313,7 +313,7 @@ SKYPAT_F(Operator_Clip, test_clip_default_inbounds) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

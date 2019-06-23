@@ -28,7 +28,7 @@ SKYPAT_F(Operator_ReduceSumSquare,
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -61,7 +61,7 @@ SKYPAT_F(Operator_ReduceSumSquare,
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -89,7 +89,7 @@ SKYPAT_F(Operator_ReduceSumSquare, test_reduce_sum_square_keepdims_example) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 1 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -121,7 +121,7 @@ SKYPAT_F(Operator_ReduceSumSquare, test_reduce_sum_square_keepdims_random) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 1 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -149,7 +149,7 @@ SKYPAT_F(Operator_ReduceSumSquare,
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 1; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -180,7 +180,7 @@ SKYPAT_F(Operator_ReduceSumSquare,
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 1; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

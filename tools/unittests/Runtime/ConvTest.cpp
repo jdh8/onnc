@@ -51,7 +51,7 @@ SKYPAT_F(Operator_Conv, test_basic_conv_with_padding) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 5 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -99,7 +99,7 @@ SKYPAT_F(Operator_Conv, test_basic_conv_without_padding) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 3 * 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -151,7 +151,7 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_padding) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 4 * 3; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -201,7 +201,7 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_no_padding) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 3 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -251,7 +251,7 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_and_asymmetric_padding) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 4 * 2; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

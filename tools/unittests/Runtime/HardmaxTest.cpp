@@ -29,7 +29,7 @@ SKYPAT_F(Operator_Hardmax, test_hardmax_example) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 4 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -52,7 +52,7 @@ SKYPAT_F(Operator_Hardmax, test_hardmax_one_hot) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 4; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -110,7 +110,7 @@ SKYPAT_F(Operator_Hardmax, test_hardmax_axis_0) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -168,7 +168,7 @@ SKYPAT_F(Operator_Hardmax, test_hardmax_axis_1) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -226,7 +226,7 @@ SKYPAT_F(Operator_Hardmax, test_hardmax_default_axis) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -284,7 +284,7 @@ SKYPAT_F(Operator_Hardmax, test_hardmax_axis_2) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

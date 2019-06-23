@@ -119,7 +119,7 @@ SKYPAT_F(Operator_DepthToSpace, test_depthtospace) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 2 * 2 * 6 * 6; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -149,7 +149,7 @@ SKYPAT_F(Operator_DepthToSpace, test_depthtospace_example) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 1 * 1 * 4 * 6; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

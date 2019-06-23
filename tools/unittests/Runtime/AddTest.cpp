@@ -97,7 +97,7 @@ SKYPAT_F(Operator_Add, test_add) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -172,7 +172,7 @@ SKYPAT_F(Operator_Add, test_add_bcast) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 4 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }

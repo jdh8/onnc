@@ -489,7 +489,7 @@ SKYPAT_F(Operator_Slice, test_slice) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 3 * 10 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -1278,7 +1278,7 @@ SKYPAT_F(Operator_Slice, test_slice_neg) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 20 * 9 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -1707,7 +1707,7 @@ SKYPAT_F(Operator_Slice, test_slice_start_out_of_bounds) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 20 * 0 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -2496,7 +2496,7 @@ SKYPAT_F(Operator_Slice, test_slice_end_out_of_bounds) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 20 * 9 * 5; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
@@ -3124,7 +3124,7 @@ SKYPAT_F(Operator_Slice, test_slice_default_axes) {
   bool is_correct;
   is_correct = true;
   for (int32_t i = 0; i < 20 * 10 * 1; ++i) {
-    if (abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
+    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
       is_correct = false;
       break;
     }
