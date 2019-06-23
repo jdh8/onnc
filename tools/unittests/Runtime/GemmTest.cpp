@@ -1,8 +1,5 @@
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
+#include "approx.hpp"
 #include <skypat/skypat.h>
-#include <vector>
 
 #define restrict
 extern "C" {
@@ -50,15 +47,12 @@ SKYPAT_F(Operator_Gemm, test_gemm_broadcast) {
                           (float *)input_2, input_2_ndim, input_2_dims,
                           (float *)output_0, output_0_ndim, output_0_dims,
                           alpha, beta, transA, transB);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_TRUE(onnc::test::approx(
+    reinterpret_cast<const float*>(output_0),
+    reinterpret_cast<const float*>(answer_0),
+    3 * 4,
+    3));
 }
 
 SKYPAT_F(Operator_Gemm, test_gemm_nobroadcast) {
@@ -111,13 +105,10 @@ SKYPAT_F(Operator_Gemm, test_gemm_nobroadcast) {
                           (float *)input_2, input_2_ndim, input_2_dims,
                           (float *)output_0, output_0_ndim, output_0_dims,
                           alpha, beta, transA, transB);
-  bool is_correct;
-  is_correct = true;
-  for (int32_t i = 0; i < 3 * 4; ++i) {
-    if (std::abs(((float *)output_0)[i] - ((float *)answer_0)[i]) > 1.0e-7) {
-      is_correct = false;
-      break;
-    }
-  }
-  ASSERT_TRUE(is_correct);
+
+  ASSERT_TRUE(onnc::test::approx(
+    reinterpret_cast<const float*>(output_0),
+    reinterpret_cast<const float*>(answer_0),
+    3 * 4,
+    3));
 }
