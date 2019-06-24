@@ -47,9 +47,9 @@ static void test(Args... args)
     using std::int32_t;
 
     const size_t order = sizeof...(Args);
-    std::array<int32_t, order> shape = { static_cast<int32_t>(args)... };
-    std::valarray<size_t> strides = onnc::valarray::strides(shape);
-    size_t size = std::accumulate(shape.cbegin(), shape.cend(), static_cast<size_t>(1), std::multiplies<size_t>());
+    const std::array<int32_t, order> shape = { static_cast<int32_t>(args)... };
+    const std::valarray<size_t> strides = onnc::valarray::strides(shape);
+    size_t size = std::accumulate(shape.begin(), shape.end(), static_cast<size_t>(1), std::multiplies<size_t>());
 
     const std::gslice identity = { 0, onnc::valarray::make<size_t>(shape), strides };
     const std::valarray<float> tensor = onnc::valarray::range<float>(size);

@@ -41,8 +41,11 @@ static std::valarray<T> range(std::size_t end)
 template<typename T, typename Container>
 static std::valarray<T> make(const Container& x)
 {
+    using std::begin;
+    using std::end;
+
     std::valarray<T> result(x.size());
-    std::copy(std::cbegin(x), std::cend(x), std::begin(result));
+    std::copy(begin(x), end(x), begin(result));
     return result;
 }
 
