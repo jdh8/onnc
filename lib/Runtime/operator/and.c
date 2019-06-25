@@ -1,22 +1,22 @@
-#include <onnc/Runtime/operator/and.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
 
-void ONNC_RUNTIME_and_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_A
-  ,int32_t input_A_ndim, const int32_t * restrict input_A_dims
-  ,const float * restrict input_B
-  ,int32_t input_B_ndim, const int32_t * restrict input_B_dims
-  ,float * restrict output_C
-  ,int32_t output_C_ndim, const int32_t * restrict output_C_dims
-) {
-  int32_t size = 1;
-  for(int32_t dim = 0 ; dim < input_A_ndim ; dim++){
-      size *= input_A_dims[dim];
-  }
-  for(int32_t index = 0 ; index < size ; index++){
-      output_C[index] = (int32_t)input_A[index] & (int32_t)input_B[index];
-  }
+#include "generic/assign.h"
+#include "generic/binary.h"
+#include "generic/reinterpret.h"
+
+static float and_(float a, float b)
+{
+    uint32_t i = reinterpret(uint32_t, a) & reinterpret(uint32_t, b);
+
+    return reinterpret(float, i);
+}
+
+void ONNC_RUNTIME_and_float(void* restrict context,
+    const float* restrict A, int32_t Adim, const int32_t* restrict Ashape,
+    const float* restrict B, int32_t Bdim, const int32_t* restrict Bshape,
+    float* restrict C, int32_t Cdim, const int32_t* restrict Cshape)
+{
+    ONNC_ASSIGN(float, C, Cshape, Cdim, A, Ashape, Adim);
+    ONNC_BINARY(float, C, Cshape, Cdim, B, Bshape, Bdim, and_);
 }
