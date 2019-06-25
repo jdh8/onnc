@@ -1,24 +1,19 @@
-#include <onnc/Runtime/operator/prelu.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
 
-void ONNC_RUNTIME_prelu_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
-  ,const float * restrict input_slope
-  ,int32_t input_slope_ndim, const int32_t * restrict input_slope_dims
-  ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
-  
-) {
-	int32_t size = 1;
+#include "generic/assign.h"
+#include "generic/size.h"
+#include <math.h>
 
-	for(int32_t i = 0 ; i < input_X_ndim ; ++i){
-		size *= input_X_dims[i];
-	}
-	for(int32_t i = 0 ; i < size ; ++i){
-		output_Y[i] = (input_X[i] >= 0.0f) ? input_X[i] : input_X[i] * input_slope[i];
-	}
+void ONNC_RUNTIME_prelu_float(void* restrict context,
+    const float* restrict X, int32_t ndim, const int32_t* restrict shape,
+    const float* restrict slope, int32_t slope_ndim, const int32_t* restrict slope_shape,
+    float* restrict Y, int32_t Yndim, const int32_t* restrict Yshape)
+{
+    int32_t size = onnc_size(shape, ndim);
+
+    ONNC_ASSIGN(float, Y, shape, ndim, slope, slope_shape, slope_ndim);
+
+    for (int32_t i = 0; i < size; ++i)
+        Y[i] = signbit(X[i]) ? Y[i] * X[i] : X[i];
 }
