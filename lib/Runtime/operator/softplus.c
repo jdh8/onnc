@@ -1,14 +1,15 @@
-#include <onnc/Runtime/operator/softplus.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
 
-void ONNC_RUNTIME_softplus_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
-  ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
-  
-) {
+#include "generic/size.h"
+#include <math.h>
+
+void ONNC_RUNTIME_softplus_float(void* restrict context,
+    const float* restrict X, int32_t ndim, const int32_t* restrict shape,
+    float* restrict Y, int32_t Yndim, const int32_t* restrict Yshape)
+{
+    int32_t size = onnc_size(shape, ndim);
+
+    for (int32_t i = 0; i < size; ++i)
+        Y[i] = log1pf(expf(X[i]));
 }
