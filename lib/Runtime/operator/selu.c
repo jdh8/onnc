@@ -1,25 +1,16 @@
-#include <onnc/Runtime/operator/selu.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
+
+#include "generic/size.h"
 #include <math.h>
 
-void ONNC_RUNTIME_selu_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_X
-  ,int32_t input_X_ndim, const int32_t * restrict input_X_dims
-  ,float * restrict output_Y
-  ,int32_t output_Y_ndim, const int32_t * restrict output_Y_dims
-  ,float alpha
-  ,float gamma
-) {
-	int32_t size = 1;
+void ONNC_RUNTIME_selu_float(void* restrict context,
+    const float* restrict X, int32_t ndim, const int32_t* restrict shape,
+    float* restrict Y, int32_t Yndim, const int32_t* restrict Yshape,
+    float alpha, float gamma)
+{
+    int32_t size = onnc_size(shape, ndim);
 
-	for(int32_t i = 0 ; i < input_X_ndim ; ++i){
-		size *= input_X_dims[i];
-	}
-
-	for(int32_t i = 0 ; i < size ; ++i){
-    output_Y[i] = gamma * ((input_X[i] <= 0.0f) ? alpha * (expf(input_X[i]) - 1.0f) : input_X[i]);
-	}
+    for (int32_t i = 0; i < size; ++i)
+        Y[i] = gamma * (signbit(X[i]) ? alpha * expm1f(X[i]) : X[i]);
 }
