@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Min, test_min_example) {
   const float input_0[] = {3.0, 2.0, 1.0};
   const int32_t input_0_ndim = 1;
@@ -16,8 +29,9 @@ SKYPAT_F(Operator_Min, test_min_example) {
   const float *inputs[] = {input_0, input_1, input_2};
   const int32_t input_ndims[] = {input_0_ndim, input_1_ndim, input_2_ndim};
   const int32_t *input_shapes[] = {input_0_dims, input_1_dims, input_2_dims};
-  ONNC_RUNTIME_min_float(nullptr, inputs, 3, input_ndims, input_shapes, output_0, output_0_ndim, output_0_dims);
-  dragonite::verify(output_0, answer_0, 3);
+  ONNC_RUNTIME_min_float(nullptr, inputs, 3, input_ndims, input_shapes,
+                         output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 3) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Min, test_min_one_input) {
@@ -31,8 +45,9 @@ SKYPAT_F(Operator_Min, test_min_one_input) {
   const float *inputs[] = {input_0};
   const int32_t input_ndims[] = {input_0_ndim};
   const int32_t *input_shapes[] = {input_0_dims};
-  ONNC_RUNTIME_min_float(nullptr, inputs, 1, input_ndims, input_shapes, output_0, output_0_ndim, output_0_dims);
-  dragonite::verify(output_0, answer_0, 3);
+  ONNC_RUNTIME_min_float(nullptr, inputs, 1, input_ndims, input_shapes,
+                         output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 3) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Min, test_min_two_inputs) {
@@ -49,6 +64,7 @@ SKYPAT_F(Operator_Min, test_min_two_inputs) {
   const float *inputs[] = {input_0, input_1};
   const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
   const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
-  ONNC_RUNTIME_min_float(nullptr, inputs, 2, input_ndims, input_shapes, output_0, output_0_ndim, output_0_dims);
-  dragonite::verify(output_0, answer_0, 3);
+  ONNC_RUNTIME_min_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                         output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 3) < 1e-5f);
 }

@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_ArgMax, test_argmax_no_keepdims_example) {
   const float input_0[] = {2.0, 1.0, 3.0, 10.0};
   const int32_t input_0_ndim = 2;
@@ -9,32 +22,30 @@ SKYPAT_F(Operator_ArgMax, test_argmax_no_keepdims_example) {
   const float answer_0[] = {0, 1};
   const int32_t axis = 1;
   const int32_t keepdims = 0;
-  ONNC_RUNTIME_argmax_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                            (float *)output_0, output_0_ndim, output_0_dims,
-                            axis, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 2);
+  ONNC_RUNTIME_argmax_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                            output_0, output_0_ndim, output_0_dims, axis,
+                            keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ArgMax, test_argmax_no_keepdims_random) {
   const float input_0[] = {
-      -1.2191339, 3.6817157,  -4.5617323, -9.81378,   -9.472368, 0.39170164,
-      -5.6257973, -9.436001,  0.75057554, -4.8188825, 1.8044119, 9.15932,
-      -3.9317777, -3.1640134, 7.371627,   0.4720606,  -3.984718, -4.190951,
-      4.997327,   -1.3437682, 8.8168335,  -4.4511347, 7.0531535, -7.5973043};
+      6.691105, 8.622023,   -9.4149275, 8.967378,   -9.756551, 1.1895254,
+      4.973867, 3.32874,    -2.3934813, -5.826562,  7.5353203, 3.8179379,
+      5.671311, 5.4769053,  4.969029,   -9.5161705, 3.4563103, 5.834528,
+      5.444251, -3.2157888, -7.345147,  4.855532,   5.1540017, -4.161073};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[8];
   const int32_t output_0_ndim = 2;
   const int32_t output_0_dims[] = {2, 4};
-  const float answer_0[] = {2, 0, 2, 2, 2, 0, 0, 0};
+  const float answer_0[] = {0, 0, 2, 0, 0, 1, 1, 1};
   const int32_t axis = 1;
   const int32_t keepdims = 0;
-  ONNC_RUNTIME_argmax_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                            (float *)output_0, output_0_ndim, output_0_dims,
-                            axis, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 8);
+  ONNC_RUNTIME_argmax_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                            output_0, output_0_ndim, output_0_dims, axis,
+                            keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ArgMax, test_argmax_keepdims_example) {
@@ -47,32 +58,30 @@ SKYPAT_F(Operator_ArgMax, test_argmax_keepdims_example) {
   const float answer_0[] = {0, 1};
   const int32_t axis = 1;
   const int32_t keepdims = 1;
-  ONNC_RUNTIME_argmax_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                            (float *)output_0, output_0_ndim, output_0_dims,
-                            axis, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 2);
+  ONNC_RUNTIME_argmax_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                            output_0, output_0_ndim, output_0_dims, axis,
+                            keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ArgMax, test_argmax_keepdims_random) {
   const float input_0[] = {
-      3.0904133, 2.081071,    6.63203,   -4.0202403, 9.072109,  8.982568,
-      -5.947535, 6.160058,    2.584016,  -2.0381222, 7.510055,  1.247958,
-      -2.580031, -0.10717773, -2.453067, 3.3241768,  9.674695,  -6.6562424,
-      -9.508869, 6.3449755,   4.3728204, -9.937804,  8.9642105, 1.1350847};
+      -2.4499667, 8.797492,   -6.0353527, 6.744987,    3.4000275,  -9.854716,
+      -8.8846855, 3.1345434,  4.2990713,  -0.79077107, 7.207363,   3.13858,
+      0.20723702, -2.1299865, -3.5681002, -0.4381767,  -2.2579908, 7.089941,
+      1.2736448,  -7.0713444, -5.7228446, 7.5169835,   0.73666036, -5.9291186};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[8];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {2, 1, 4};
-  const float answer_0[] = {1, 1, 2, 1, 1, 0, 2, 1};
+  const float answer_0[] = {2, 0, 2, 0, 0, 2, 1, 0};
   const int32_t axis = 1;
   const int32_t keepdims = 1;
-  ONNC_RUNTIME_argmax_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                            (float *)output_0, output_0_ndim, output_0_dims,
-                            axis, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 8);
+  ONNC_RUNTIME_argmax_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                            output_0, output_0_ndim, output_0_dims, axis,
+                            keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ArgMax, test_argmax_default_axis_example) {
@@ -85,30 +94,28 @@ SKYPAT_F(Operator_ArgMax, test_argmax_default_axis_example) {
   const float answer_0[] = {1, 1};
   const int32_t keepdims = 1;
   const int32_t axis = 0;
-  ONNC_RUNTIME_argmax_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                            (float *)output_0, output_0_ndim, output_0_dims,
-                            axis, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 2);
+  ONNC_RUNTIME_argmax_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                            output_0, output_0_ndim, output_0_dims, axis,
+                            keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ArgMax, test_argmax_default_axis_random) {
   const float input_0[] = {
-      6.1212087,  1.5424889,  -5.267021,   3.7225504,  -9.276219,  2.2427602,
-      7.9785347,  4.6386166,  -0.73645407, -2.0957918, -3.0949986, -2.9219303,
-      -4.1007714, -3.1407034, 5.641354,    -1.8403687, 9.641227,   -3.0095005,
-      7.6873007,  -5.5566864, 0.14472623,  9.650351,   -1.6304424, 0.39748943};
+      9.229823,   -6.5093665, 6.1206374,  -9.479706,  -4.7342377, -1.5301152,
+      -5.8352923, 1.8410127,  1.7024198,  -5.112853,  -5.5208416, 7.4790645,
+      -9.915015,  -3.1675928, 9.237893,   -3.5102909, -5.3102536, 9.287009,
+      -9.446119,  -1.6128069, -0.6865576, -6.3975925, 2.3503275,  -5.7277484};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[12];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {1, 3, 4};
-  const float answer_0[] = {0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1};
+  const float answer_0[] = {0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0};
   const int32_t keepdims = 1;
   const int32_t axis = 0;
-  ONNC_RUNTIME_argmax_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                            (float *)output_0, output_0_ndim, output_0_dims,
-                            axis, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 12);
+  ONNC_RUNTIME_argmax_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                            output_0, output_0_ndim, output_0_dims, axis,
+                            keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 12) < 1e-5f);
 }

@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Ceil, test_ceil_example) {
   const float input_0[] = {-1.5, 1.2};
   const int32_t input_0_ndim = 1;
@@ -7,39 +20,37 @@ SKYPAT_F(Operator_Ceil, test_ceil_example) {
   const int32_t output_0_ndim = 1;
   const int32_t output_0_dims[] = {2};
   const float answer_0[] = {-1.0, 2.0};
-  ONNC_RUNTIME_ceil_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                          (float *)output_0, output_0_ndim, output_0_dims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 2);
+  ONNC_RUNTIME_ceil_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                          output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Ceil, test_ceil) {
   const float input_0[] = {
-      -0.88139534, -0.8808657,  0.26901108,  0.44686216,  1.4057999,
-      -2.480903,   2.1706853,   1.1986642,   1.2983873,   1.3501852,
-      -0.2845948,  0.38138494,  0.523523,    -0.0677154,  0.6647833,
-      0.6380462,   1.1607376,   0.7923756,   -0.12235768, -0.4101373,
-      -0.6388356,  0.23760441,  -0.59265035, 0.5796678,   0.5213819,
-      0.5406845,   -0.90050393, 0.91091776,  0.6339115,   0.9083612,
-      1.3049151,   0.25641048,  -0.42069015, 0.85298985,  1.3382106,
-      1.4859883,   1.6751657,   -0.3693952,  -0.5389426,  2.3714452,
-      -0.15371145, 0.11766317,  -0.28351462, -0.5746261,  1.498786,
-      -1.4602858,  0.18061066,  -0.6654417,  0.60000974,  0.44642648,
-      -0.14600332, 0.032320864, 0.016073357, 0.15635833,  -0.9308595,
-      1.0589503,   1.351173,    -0.6524682,  1.2024933,   1.2127671};
+      0.16223462,  0.15332793,  -0.13029309, 0.34906998, -0.6768123,
+      -0.7207275,  0.08517971,  -0.3612139,  -1.4433739, 0.76441133,
+      -0.4569049,  0.7207717,   -0.17805362, -1.1828744, 0.27450225,
+      -0.3034686,  0.36677924,  1.5298203,   0.24831347, 1.484716,
+      0.5792381,   -0.68763137, 1.7820652,   0.18057254, 0.3793179,
+      -1.989423,   -2.4868584,  0.14978306,  -0.8701113, 1.0312272,
+      0.5692347,   0.20478432,  -0.61507565, -1.5093771, -1.3689855,
+      0.6116965,   0.18798667,  -1.358859,   0.41533715, 2.3681664,
+      -0.5262861,  0.7983595,   1.2968984,   1.3005514,  -2.1909342,
+      -0.9271853,  1.3270583,   -1.3597348,  -2.202468,  -0.7181976,
+      -0.15122393, 0.49586654,  -0.53494525, 0.7376397,  -1.1293029,
+      1.115224,    -0.33622843, 0.6012759,   -0.7270101, 0.033193763};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {3, 4, 5};
   float output_0[60];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {3, 4, 5};
   const float answer_0[] = {
-      -0.0, -0.0, 1.0,  1.0, 2.0,  -2.0, 3.0,  2.0,  2.0,  2.0,  -0.0, 1.0,
-      1.0,  -0.0, 1.0,  1.0, 2.0,  1.0,  -0.0, -0.0, -0.0, 1.0,  -0.0, 1.0,
-      1.0,  1.0,  -0.0, 1.0, 1.0,  1.0,  2.0,  1.0,  -0.0, 1.0,  2.0,  2.0,
-      2.0,  -0.0, -0.0, 3.0, -0.0, 1.0,  -0.0, -0.0, 2.0,  -1.0, 1.0,  -0.0,
-      1.0,  1.0,  -0.0, 1.0, 1.0,  1.0,  -0.0, 2.0,  2.0,  -0.0, 2.0,  2.0};
-  ONNC_RUNTIME_ceil_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                          (float *)output_0, output_0_ndim, output_0_dims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 60);
+      1.0,  1.0,  -0.0, 1.0,  -0.0, -0.0, 1.0,  -0.0, -1.0, 1.0,  -0.0, 1.0,
+      -0.0, -1.0, 1.0,  -0.0, 1.0,  2.0,  1.0,  2.0,  1.0,  -0.0, 2.0,  1.0,
+      1.0,  -1.0, -2.0, 1.0,  -0.0, 2.0,  1.0,  1.0,  -0.0, -1.0, -1.0, 1.0,
+      1.0,  -1.0, 1.0,  3.0,  -0.0, 1.0,  2.0,  2.0,  -2.0, -0.0, 2.0,  -1.0,
+      -2.0, -0.0, -0.0, 1.0,  -0.0, 1.0,  -1.0, 2.0,  -0.0, 1.0,  -0.0, 1.0};
+  ONNC_RUNTIME_ceil_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                          output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 60) < 1e-5f);
 }

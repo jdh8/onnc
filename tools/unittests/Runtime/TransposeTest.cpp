@@ -1,184 +1,181 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Transpose, test_transpose_default) {
   const float input_0[] = {
-      0.47823536, 0.33798894, 0.23681352,  0.74736303,  0.10555136, 0.7456113,
-      0.8644907,  0.7785144,  0.34786403,  0.9167569,   0.6290914,  0.5454781,
-      0.18705547, 0.1359344,  0.005183343, 0.8762904,   0.14589703, 0.8410207,
-      0.6132695,  0.9989239,  0.3577919,   0.020005528, 0.8182367,  0.2914033};
+      0.22805642, 0.3003442,  0.19453843, 0.44306207,  0.5043461,  0.89922696,
+      0.7707544,  0.715345,   0.57266974, 0.3285802,   0.07007694, 0.2588076,
+      0.19468726, 0.22789727, 0.22677489, 0.43054667,  0.3807149,  0.33704677,
+      0.88123757, 0.20273742, 0.16365367, 0.076002896, 0.9248602,  0.19434631};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {4, 3, 2};
   const float answer_0[] = {
-      0.47823536, 0.18705547,  0.10555136, 0.14589703, 0.34786403, 0.3577919,
-      0.33798894, 0.1359344,   0.7456113,  0.8410207,  0.9167569,  0.020005528,
-      0.23681352, 0.005183343, 0.8644907,  0.6132695,  0.6290914,  0.8182367,
-      0.74736303, 0.8762904,   0.7785144,  0.9989239,  0.5454781,  0.2914033};
-  const int32_t perm[] = {};
-  const int32_t number_of_perm = 0;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+      0.22805642, 0.19468726, 0.5043461,  0.3807149,  0.57266974, 0.16365367,
+      0.3003442,  0.22789727, 0.89922696, 0.33704677, 0.3285802,  0.076002896,
+      0.19453843, 0.22677489, 0.7707544,  0.88123757, 0.07007694, 0.9248602,
+      0.44306207, 0.43054667, 0.715345,   0.20273742, 0.2588076,  0.19434631};
+  const int32_t perm[] = {2, 1, 0};
+  const int32_t number_of_perm = 3;
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_0) {
-  const float input_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                           0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                           0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                           0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                           0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                           0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float input_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {2, 3, 4};
-  const float answer_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                            0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                            0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                            0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                            0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                            0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float answer_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t perm[] = {0, 1, 2};
   const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_1) {
-  const float input_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                           0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                           0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                           0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                           0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                           0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float input_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {2, 4, 3};
-  const float answer_0[] = {0.014320762, 0.41695225,  0.32019392,   0.8875817,
-                            0.89284194,  0.67122966,  0.50006396,   0.8694754,
-                            0.17435145,  0.077316254, 0.0075976746, 0.65734667,
-                            0.26447648,  0.45933247,  0.17704771,   0.98057157,
-                            0.15212761,  0.77671266,  0.75554323,   0.7896726,
-                            0.621551,    0.11448738,  0.40871048,   0.4295814};
+  const float answer_0[] = {
+      0.572268,   0.84007704, 0.606817,   0.3737178,  0.507263,    0.1320044,
+      0.55529976, 0.3272407,  0.8558071,  0.6425663,  0.18107992,  0.027789488,
+      0.84529984, 0.7841668,  0.34402606, 0.21924663, 0.4017798,   0.26157886,
+      0.48785785, 0.49945477, 0.39006907, 0.7305207,  0.029572658, 0.30089337};
   const int32_t perm[] = {0, 2, 1};
   const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_2) {
-  const float input_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                           0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                           0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                           0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                           0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                           0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float input_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {3, 2, 4};
-  const float answer_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                            0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                            0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                            0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                            0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                            0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float answer_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,   0.84529984, 0.21924663,
+      0.48785785, 0.7305207,   0.84007704, 0.507263,    0.3272407,  0.18107992,
+      0.7841668,  0.4017798,   0.49945477, 0.029572658, 0.606817,   0.1320044,
+      0.8558071,  0.027789488, 0.34402606, 0.26157886,  0.39006907, 0.30089337};
   const int32_t perm[] = {1, 0, 2};
   const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_3) {
-  const float input_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                           0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                           0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                           0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                           0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                           0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float input_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {3, 4, 2};
   const float answer_0[] = {
-      0.014320762, 0.26447648, 0.8875817,    0.98057157, 0.50006396, 0.75554323,
-      0.077316254, 0.11448738, 0.41695225,   0.45933247, 0.89284194, 0.15212761,
-      0.8694754,   0.7896726,  0.0075976746, 0.40871048, 0.32019392, 0.17704771,
-      0.67122966,  0.77671266, 0.17435145,   0.621551,   0.65734667, 0.4295814};
+      0.572268,  0.84529984, 0.3737178,  0.21924663,  0.55529976,  0.48785785,
+      0.6425663, 0.7305207,  0.84007704, 0.7841668,   0.507263,    0.4017798,
+      0.3272407, 0.49945477, 0.18107992, 0.029572658, 0.606817,    0.34402606,
+      0.1320044, 0.26157886, 0.8558071,  0.39006907,  0.027789488, 0.30089337};
   const int32_t perm[] = {1, 2, 0};
   const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_4) {
-  const float input_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                           0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                           0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                           0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                           0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                           0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float input_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {4, 2, 3};
   const float answer_0[] = {
-      0.014320762, 0.41695225,   0.32019392, 0.26447648, 0.45933247, 0.17704771,
-      0.8875817,   0.89284194,   0.67122966, 0.98057157, 0.15212761, 0.77671266,
-      0.50006396,  0.8694754,    0.17435145, 0.75554323, 0.7896726,  0.621551,
-      0.077316254, 0.0075976746, 0.65734667, 0.11448738, 0.40871048, 0.4295814};
+      0.572268,   0.84007704, 0.606817,    0.84529984, 0.7841668,   0.34402606,
+      0.3737178,  0.507263,   0.1320044,   0.21924663, 0.4017798,   0.26157886,
+      0.55529976, 0.3272407,  0.8558071,   0.48785785, 0.49945477,  0.39006907,
+      0.6425663,  0.18107992, 0.027789488, 0.7305207,  0.029572658, 0.30089337};
   const int32_t perm[] = {2, 0, 1};
   const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Transpose, test_transpose_all_permutations_5) {
-  const float input_0[] = {0.014320762, 0.8875817,  0.50006396, 0.077316254,
-                           0.41695225,  0.89284194, 0.8694754,  0.0075976746,
-                           0.32019392,  0.67122966, 0.17435145, 0.65734667,
-                           0.26447648,  0.98057157, 0.75554323, 0.11448738,
-                           0.45933247,  0.15212761, 0.7896726,  0.40871048,
-                           0.17704771,  0.77671266, 0.621551,   0.4295814};
+  const float input_0[] = {
+      0.572268,   0.3737178,   0.55529976, 0.6425663,  0.84007704, 0.507263,
+      0.3272407,  0.18107992,  0.606817,   0.1320044,  0.8558071,  0.027789488,
+      0.84529984, 0.21924663,  0.48785785, 0.7305207,  0.7841668,  0.4017798,
+      0.49945477, 0.029572658, 0.34402606, 0.26157886, 0.39006907, 0.30089337};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
   float output_0[24];
   const int32_t output_0_ndim = 3;
   const int32_t output_0_dims[] = {4, 3, 2};
   const float answer_0[] = {
-      0.014320762, 0.26447648, 0.41695225,   0.45933247, 0.32019392, 0.17704771,
-      0.8875817,   0.98057157, 0.89284194,   0.15212761, 0.67122966, 0.77671266,
-      0.50006396,  0.75554323, 0.8694754,    0.7896726,  0.17435145, 0.621551,
-      0.077316254, 0.11448738, 0.0075976746, 0.40871048, 0.65734667, 0.4295814};
+      0.572268,   0.84529984, 0.84007704, 0.7841668,   0.606817,    0.34402606,
+      0.3737178,  0.21924663, 0.507263,   0.4017798,   0.1320044,   0.26157886,
+      0.55529976, 0.48785785, 0.3272407,  0.49945477,  0.8558071,   0.39006907,
+      0.6425663,  0.7305207,  0.18107992, 0.029572658, 0.027789488, 0.30089337};
   const int32_t perm[] = {2, 1, 0};
   const int32_t number_of_perm = 3;
-  ONNC_RUNTIME_transpose_float(NULL, (float *)input_0, input_0_ndim,
-                               input_0_dims, (float *)output_0, output_0_ndim,
-                               output_0_dims, (int32_t *)perm, number_of_perm);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_transpose_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                               output_0, output_0_ndim, output_0_dims,
+                               const_cast<int32_t *>(perm), number_of_perm);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }

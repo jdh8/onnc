@@ -1,117 +1,142 @@
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
 #define restrict
+#endif
+
 extern "C" {
 #include <onnc/Runtime/onnc-runtime.h>
 }
+
+#undef restrict
+
+#include "relative-error.hpp"
 #include <skypat/skypat.h>
-#include <cstring>
+SKYPAT_F(Operator_Concat, test_concat_1d_axis_0) {
+  const float input_0[] = {1.0, 2.0};
+  const int32_t input_0_ndim = 1;
+  const int32_t input_0_dims[] = {2};
+  const float input_1[] = {3.0, 4.0};
+  const int32_t input_1_ndim = 1;
+  const int32_t input_1_dims[] = {2};
+  float output_0[4];
+  const int32_t output_0_ndim = 1;
+  const int32_t output_0_dims[] = {4};
+  const float answer_0[] = {1.0, 2.0, 3.0, 4.0};
+  const int32_t axis = 0;
 
-SKYPAT_F(Operator_Concat, test_1d)
-{
-    const float input_0[] = { 1, 2 };
-    const float input_1[] = { 3, 4, 5 };
-    const float* inputs[] = { input_0, input_1 };
-
-    const int32_t input_ndims[] = { 1, 1 };
-
-    const int32_t input_0_shape[] = { 2 };
-    const int32_t input_1_shape[] = { 3 };
-    const int32_t* input_shapes[] = { input_0_shape, input_1_shape };
-
-    const float output[] = { 1, 2, 3, 4, 5 };
-    const int32_t output_ndim = 1;
-    const int32_t output_shape[] = { 5 };
-
-    float buffer[5];
-
-    ONNC_RUNTIME_concat_float(nullptr,
-        inputs, 2, input_ndims, input_shapes,
-        buffer, output_ndim, output_shape,
-        0);
-
-    ASSERT_FALSE(std::memcmp(buffer, output, sizeof(buffer)));
+  const float *inputs[] = {input_0, input_1};
+  const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
+  const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
+  ONNC_RUNTIME_concat_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                            output_0, output_0_ndim, output_0_dims, axis);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 4) < 1e-5f);
 }
 
-SKYPAT_F(Operator_Concat, test_2d)
-{
-    const float input_0[] = { 1, 2, 3, 4 };
-    const float input_1[] = { 5, 6, 7, 8 };
-    const float* inputs[] = { input_0, input_1 };
+SKYPAT_F(Operator_Concat, test_concat_2d_axis_0) {
+  const float input_0[] = {1.0, 2.0, 3.0, 4.0};
+  const int32_t input_0_ndim = 2;
+  const int32_t input_0_dims[] = {2, 2};
+  const float input_1[] = {5.0, 6.0, 7.0, 8.0};
+  const int32_t input_1_ndim = 2;
+  const int32_t input_1_dims[] = {2, 2};
+  float output_0[8];
+  const int32_t output_0_ndim = 2;
+  const int32_t output_0_dims[] = {4, 2};
+  const float answer_0[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+  const int32_t axis = 0;
 
-    const int32_t input_ndims[] = { 2, 2 };
-
-    const int32_t input_0_shape[] = { 2, 2 };
-    const int32_t input_1_shape[] = { 2, 2 };
-    const int32_t* input_shapes[] = { input_0_shape, input_1_shape };
-
-    const float output_0[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-    const int32_t output_0_ndim = 2;
-    const int32_t output_0_shape[] = { 4, 2 };
-
-    const float output_1[] = { 1, 2, 5, 6, 3, 4, 7, 8 };
-    const int32_t output_1_ndim = 2;
-    const int32_t output_1_shape[] = { 2, 4 };
-
-    float buffer[8];
-
-    ONNC_RUNTIME_concat_float(nullptr,
-        inputs, 2, input_ndims, input_shapes,
-        buffer, output_0_ndim, output_0_shape,
-        0);
-
-    ASSERT_FALSE(std::memcmp(buffer, output_0, sizeof(buffer)));
-
-    ONNC_RUNTIME_concat_float(nullptr,
-        inputs, 2, input_ndims, input_shapes,
-        buffer, output_1_ndim, output_1_shape,
-        1);
-
-    ASSERT_FALSE(std::memcmp(buffer, output_1, sizeof(buffer)));
+  const float *inputs[] = {input_0, input_1};
+  const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
+  const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
+  ONNC_RUNTIME_concat_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                            output_0, output_0_ndim, output_0_dims, axis);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
 }
 
-SKYPAT_F(Operator_Concat, test_3d)
-{
-    const float input_0[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-    const float input_1[] = { 9, 10, 11, 12, 13, 14, 15, 16 };
-    const float* inputs[] = { input_0, input_1 };
+SKYPAT_F(Operator_Concat, test_concat_2d_axis_1) {
+  const float input_0[] = {1.0, 2.0, 3.0, 4.0};
+  const int32_t input_0_ndim = 2;
+  const int32_t input_0_dims[] = {2, 2};
+  const float input_1[] = {5.0, 6.0, 7.0, 8.0};
+  const int32_t input_1_ndim = 2;
+  const int32_t input_1_dims[] = {2, 2};
+  float output_0[8];
+  const int32_t output_0_ndim = 2;
+  const int32_t output_0_dims[] = {2, 4};
+  const float answer_0[] = {1.0, 2.0, 5.0, 6.0, 3.0, 4.0, 7.0, 8.0};
+  const int32_t axis = 1;
 
-    const int32_t input_ndims[] = { 3, 3 };
+  const float *inputs[] = {input_0, input_1};
+  const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
+  const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
+  ONNC_RUNTIME_concat_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                            output_0, output_0_ndim, output_0_dims, axis);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
+}
 
-    const int32_t input_0_shape[] = { 2, 2, 2 };
-    const int32_t input_1_shape[] = { 2, 2, 2 };
-    const int32_t* input_shapes[] = { input_0_shape, input_1_shape };
+SKYPAT_F(Operator_Concat, test_concat_3d_axis_0) {
+  const float input_0[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+  const int32_t input_0_ndim = 3;
+  const int32_t input_0_dims[] = {2, 2, 2};
+  const float input_1[] = {9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
+  const int32_t input_1_ndim = 3;
+  const int32_t input_1_dims[] = {2, 2, 2};
+  float output_0[16];
+  const int32_t output_0_ndim = 3;
+  const int32_t output_0_dims[] = {4, 2, 2};
+  const float answer_0[] = {1.0, 2.0,  3.0,  4.0,  5.0,  6.0,  7.0,  8.0,
+                            9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
+  const int32_t axis = 0;
 
-    const float output_0[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-    const int32_t output_0_ndim = 3;
-    const int32_t output_0_shape[] = { 4, 2, 2 };
+  const float *inputs[] = {input_0, input_1};
+  const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
+  const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
+  ONNC_RUNTIME_concat_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                            output_0, output_0_ndim, output_0_dims, axis);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 16) < 1e-5f);
+}
 
-    const float output_1[] = { 1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8, 13, 14, 15, 16 };
-    const int32_t output_1_ndim = 3;
-    const int32_t output_1_shape[] = { 2, 4, 2 };
+SKYPAT_F(Operator_Concat, test_concat_3d_axis_1) {
+  const float input_0[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+  const int32_t input_0_ndim = 3;
+  const int32_t input_0_dims[] = {2, 2, 2};
+  const float input_1[] = {9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
+  const int32_t input_1_ndim = 3;
+  const int32_t input_1_dims[] = {2, 2, 2};
+  float output_0[16];
+  const int32_t output_0_ndim = 3;
+  const int32_t output_0_dims[] = {2, 4, 2};
+  const float answer_0[] = {1.0, 2.0, 3.0, 4.0, 9.0,  10.0, 11.0, 12.0,
+                            5.0, 6.0, 7.0, 8.0, 13.0, 14.0, 15.0, 16.0};
+  const int32_t axis = 1;
 
-    const float output_2[] = { 1, 2, 9, 10, 3, 4, 11, 12, 5, 6, 13, 14, 7, 8, 15, 16 };
-    const int32_t output_2_ndim = 3;
-    const int32_t output_2_shape[] = { 2, 2, 4 };
+  const float *inputs[] = {input_0, input_1};
+  const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
+  const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
+  ONNC_RUNTIME_concat_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                            output_0, output_0_ndim, output_0_dims, axis);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 16) < 1e-5f);
+}
 
-    float buffer[16];
+SKYPAT_F(Operator_Concat, test_concat_3d_axis_2) {
+  const float input_0[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+  const int32_t input_0_ndim = 3;
+  const int32_t input_0_dims[] = {2, 2, 2};
+  const float input_1[] = {9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
+  const int32_t input_1_ndim = 3;
+  const int32_t input_1_dims[] = {2, 2, 2};
+  float output_0[16];
+  const int32_t output_0_ndim = 3;
+  const int32_t output_0_dims[] = {2, 2, 4};
+  const float answer_0[] = {1.0, 2.0, 9.0,  10.0, 3.0, 4.0, 11.0, 12.0,
+                            5.0, 6.0, 13.0, 14.0, 7.0, 8.0, 15.0, 16.0};
+  const int32_t axis = 2;
 
-    ONNC_RUNTIME_concat_float(nullptr,
-        inputs, 2, input_ndims, input_shapes,
-        buffer, output_0_ndim, output_0_shape,
-        0);
-
-    ASSERT_FALSE(std::memcmp(buffer, output_0, sizeof(buffer)));
-
-    ONNC_RUNTIME_concat_float(nullptr,
-        inputs, 2, input_ndims, input_shapes,
-        buffer, output_1_ndim, output_1_shape,
-        1);
-
-    ASSERT_FALSE(std::memcmp(buffer, output_1, sizeof(buffer)));
-
-    ONNC_RUNTIME_concat_float(nullptr,
-        inputs, 2, input_ndims, input_shapes,
-        buffer, output_2_ndim, output_2_shape,
-        2);
-
-    ASSERT_FALSE(std::memcmp(buffer, output_2, sizeof(buffer)));
+  const float *inputs[] = {input_0, input_1};
+  const int32_t input_ndims[] = {input_0_ndim, input_1_ndim};
+  const int32_t *input_shapes[] = {input_0_dims, input_1_dims};
+  ONNC_RUNTIME_concat_float(nullptr, inputs, 2, input_ndims, input_shapes,
+                            output_0, output_0_ndim, output_0_dims, axis);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 16) < 1e-5f);
 }

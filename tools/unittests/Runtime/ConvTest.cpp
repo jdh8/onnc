@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Conv, test_basic_conv_with_padding) {
   const float input_0[] = {0.0,  1.0,  2.0,  3.0,  4.0,  5.0,  6.0,  7.0,  8.0,
                            9.0,  10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0,
@@ -8,9 +21,9 @@ SKYPAT_F(Operator_Conv, test_basic_conv_with_padding) {
   const float input_1[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   const int32_t input_1_ndim = 4;
   const int32_t input_1_dims[] = {1, 1, 3, 3};
-  const float input_2[] = {};
+  const float *input_2 = nullptr;
   const int32_t input_2_ndim = 0;
-  const int32_t input_2_dims[] = {};
+  const int32_t *input_2_dims = nullptr;
   float output_0[25];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 1, 5, 5};
@@ -22,21 +35,20 @@ SKYPAT_F(Operator_Conv, test_basic_conv_with_padding) {
   const int32_t number_of_kernel_shape = 2;
   const int32_t pads[] = {1, 1, 1, 1};
   const int32_t number_of_pads = 4;
-  const int32_t strides[] = {};
-  const int32_t number_of_strides = 0;
-  const auto auto_pad = "NOTSET";
-  const int32_t group = 0;
-  const int32_t dilations[] = {};
-  const int32_t number_of_dilations = 0;
+  const int32_t strides[] = {1, 1, 1, 1};
+  const int32_t number_of_strides = 4;
+  const char auto_pad[] = "NOTSET";
+  const int32_t dilations[] = {1, 1, 1, 1};
+  const int32_t number_of_dilations = 4;
+  const int32_t group = 1;
   ONNC_RUNTIME_conv_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)output_0, output_0_ndim, output_0_dims, auto_pad,
-      (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
-      number_of_kernel_shape, (int32_t *)pads, number_of_pads,
-      (int32_t *)strides, number_of_strides);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 25);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, output_0,
+      output_0_ndim, output_0_dims, auto_pad, const_cast<int32_t *>(dilations),
+      number_of_dilations, group, const_cast<int32_t *>(kernel_shape),
+      number_of_kernel_shape, const_cast<int32_t *>(pads), number_of_pads,
+      const_cast<int32_t *>(strides), number_of_strides);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 25) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Conv, test_basic_conv_without_padding) {
@@ -48,9 +60,9 @@ SKYPAT_F(Operator_Conv, test_basic_conv_without_padding) {
   const float input_1[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   const int32_t input_1_ndim = 4;
   const int32_t input_1_dims[] = {1, 1, 3, 3};
-  const float input_2[] = {};
+  const float *input_2 = nullptr;
   const int32_t input_2_ndim = 0;
-  const int32_t input_2_dims[] = {};
+  const int32_t *input_2_dims = nullptr;
   float output_0[9];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 1, 3, 3};
@@ -60,21 +72,20 @@ SKYPAT_F(Operator_Conv, test_basic_conv_without_padding) {
   const int32_t number_of_kernel_shape = 2;
   const int32_t pads[] = {0, 0, 0, 0};
   const int32_t number_of_pads = 4;
-  const int32_t strides[] = {};
-  const int32_t number_of_strides = 0;
-  const auto auto_pad = "NOTSET";
-  const int32_t group = 0;
-  const int32_t dilations[] = {};
-  const int32_t number_of_dilations = 0;
+  const int32_t strides[] = {1, 1, 1, 1};
+  const int32_t number_of_strides = 4;
+  const char auto_pad[] = "NOTSET";
+  const int32_t dilations[] = {1, 1, 1, 1};
+  const int32_t number_of_dilations = 4;
+  const int32_t group = 1;
   ONNC_RUNTIME_conv_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)output_0, output_0_ndim, output_0_dims, auto_pad,
-      (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
-      number_of_kernel_shape, (int32_t *)pads, number_of_pads,
-      (int32_t *)strides, number_of_strides);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 9);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, output_0,
+      output_0_ndim, output_0_dims, auto_pad, const_cast<int32_t *>(dilations),
+      number_of_dilations, group, const_cast<int32_t *>(kernel_shape),
+      number_of_kernel_shape, const_cast<int32_t *>(pads), number_of_pads,
+      const_cast<int32_t *>(strides), number_of_strides);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 9) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Conv, test_conv_with_strides_padding) {
@@ -87,9 +98,9 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_padding) {
   const float input_1[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   const int32_t input_1_ndim = 4;
   const int32_t input_1_dims[] = {1, 1, 3, 3};
-  const float input_2[] = {};
+  const float *input_2 = nullptr;
   const int32_t input_2_ndim = 0;
-  const int32_t input_2_dims[] = {};
+  const int32_t *input_2_dims = nullptr;
   float output_0[12];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 1, 4, 3};
@@ -101,19 +112,18 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_padding) {
   const int32_t number_of_pads = 4;
   const int32_t strides[] = {2, 2};
   const int32_t number_of_strides = 2;
-  const auto auto_pad = "NOTSET";
-  const int32_t group = 0;
-  const int32_t dilations[] = {};
-  const int32_t number_of_dilations = 0;
+  const char auto_pad[] = "NOTSET";
+  const int32_t dilations[] = {1, 1, 1, 1};
+  const int32_t number_of_dilations = 4;
+  const int32_t group = 1;
   ONNC_RUNTIME_conv_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)output_0, output_0_ndim, output_0_dims, auto_pad,
-      (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
-      number_of_kernel_shape, (int32_t *)pads, number_of_pads,
-      (int32_t *)strides, number_of_strides);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 12);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, output_0,
+      output_0_ndim, output_0_dims, auto_pad, const_cast<int32_t *>(dilations),
+      number_of_dilations, group, const_cast<int32_t *>(kernel_shape),
+      number_of_kernel_shape, const_cast<int32_t *>(pads), number_of_pads,
+      const_cast<int32_t *>(strides), number_of_strides);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 12) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Conv, test_conv_with_strides_no_padding) {
@@ -126,9 +136,9 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_no_padding) {
   const float input_1[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   const int32_t input_1_ndim = 4;
   const int32_t input_1_dims[] = {1, 1, 3, 3};
-  const float input_2[] = {};
+  const float *input_2 = nullptr;
   const int32_t input_2_ndim = 0;
-  const int32_t input_2_dims[] = {};
+  const int32_t *input_2_dims = nullptr;
   float output_0[6];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 1, 3, 2};
@@ -139,19 +149,18 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_no_padding) {
   const int32_t number_of_pads = 4;
   const int32_t strides[] = {2, 2};
   const int32_t number_of_strides = 2;
-  const auto auto_pad = "NOTSET";
-  const int32_t group = 0;
-  const int32_t dilations[] = {};
-  const int32_t number_of_dilations = 0;
+  const char auto_pad[] = "NOTSET";
+  const int32_t dilations[] = {1, 1, 1, 1};
+  const int32_t number_of_dilations = 4;
+  const int32_t group = 1;
   ONNC_RUNTIME_conv_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)output_0, output_0_ndim, output_0_dims, auto_pad,
-      (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
-      number_of_kernel_shape, (int32_t *)pads, number_of_pads,
-      (int32_t *)strides, number_of_strides);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 6);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, output_0,
+      output_0_ndim, output_0_dims, auto_pad, const_cast<int32_t *>(dilations),
+      number_of_dilations, group, const_cast<int32_t *>(kernel_shape),
+      number_of_kernel_shape, const_cast<int32_t *>(pads), number_of_pads,
+      const_cast<int32_t *>(strides), number_of_strides);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 6) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Conv, test_conv_with_strides_and_asymmetric_padding) {
@@ -164,9 +173,9 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_and_asymmetric_padding) {
   const float input_1[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
   const int32_t input_1_ndim = 4;
   const int32_t input_1_dims[] = {1, 1, 3, 3};
-  const float input_2[] = {};
+  const float *input_2 = nullptr;
   const int32_t input_2_ndim = 0;
-  const int32_t input_2_dims[] = {};
+  const int32_t *input_2_dims = nullptr;
   float output_0[8];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 1, 4, 2};
@@ -178,17 +187,16 @@ SKYPAT_F(Operator_Conv, test_conv_with_strides_and_asymmetric_padding) {
   const int32_t number_of_pads = 4;
   const int32_t strides[] = {2, 2};
   const int32_t number_of_strides = 2;
-  const auto auto_pad = "NOTSET";
-  const int32_t group = 0;
-  const int32_t dilations[] = {};
-  const int32_t number_of_dilations = 0;
+  const char auto_pad[] = "NOTSET";
+  const int32_t dilations[] = {1, 1, 1, 1};
+  const int32_t number_of_dilations = 4;
+  const int32_t group = 1;
   ONNC_RUNTIME_conv_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)output_0, output_0_ndim, output_0_dims, auto_pad,
-      (int32_t *)dilations, number_of_dilations, group, (int32_t *)kernel_shape,
-      number_of_kernel_shape, (int32_t *)pads, number_of_pads,
-      (int32_t *)strides, number_of_strides);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 8);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, output_0,
+      output_0_ndim, output_0_dims, auto_pad, const_cast<int32_t *>(dilations),
+      number_of_dilations, group, const_cast<int32_t *>(kernel_shape),
+      number_of_kernel_shape, const_cast<int32_t *>(pads), number_of_pads,
+      const_cast<int32_t *>(strides), number_of_strides);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
 }

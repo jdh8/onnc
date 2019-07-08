@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Shape, test_shape_example) {
   const float input_0[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
   const int32_t input_0_ndim = 2;
@@ -7,34 +20,32 @@ SKYPAT_F(Operator_Shape, test_shape_example) {
   const int32_t output_0_ndim = 1;
   const int32_t output_0_dims[] = {2};
   const float answer_0[] = {2, 3};
-  ONNC_RUNTIME_shape_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                           (float *)output_0, output_0_ndim, output_0_dims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 2);
+  ONNC_RUNTIME_shape_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                           output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Shape, test_shape) {
   const float input_0[] = {
-      -0.27020895, -0.3368473, 1.4482629,   -1.250352,   0.6832783,
-      0.22915003,  2.1718554,  0.117759295, -0.06217433, -0.69441384,
-      0.9643481,   -0.2812136, -1.2346522,  1.0559924,   0.092566915,
-      -0.7005651,  2.4513535,  1.3264627,   -1.4323947,  0.055936232,
-      1.1565071,   -1.3905009, 0.5088351,   0.3627538,   0.59624034,
-      1.8282002,   0.444331,   -0.6819063,  -0.38698116, 0.27155623,
-      0.66394657,  0.15712784, -0.09431352, 1.2035366,   0.26209533,
-      0.31010932,  1.610613,   1.5494205,   -0.63629985, -0.098678306,
-      -0.9409592,  -3.049581,  -0.55394614, -0.13521536, -0.77464306,
-      0.6220127,   0.15027,    -0.52923954, -0.16341515, 1.693823,
-      -1.1168956,  2.3427658,  0.54069865,  0.20307669,  -0.48165748,
-      -0.6570333,  -0.5915634, -0.11655856, -0.31214324, 0.7497531};
+      -1.1888592,  -0.5068163,   -0.596314,   -0.052567296, -1.9362798,
+      0.1887786,   0.52389103,   0.08842209,  -0.31088617,  0.097400166,
+      0.39904633,  -2.7725928,   1.9559124,   0.39009333,   -0.6524086,
+      -0.39095336, 0.49374178,   -0.11610394, -2.0306845,   2.064493,
+      -0.11054066, 1.0201727,    -0.69204986, 1.5363771,    0.2863437,
+      0.60884386,  -1.0452534,   1.2111453,   0.68981814,   1.3018463,
+      -0.6280876,  -0.48102713,  2.3039167,   -1.0600158,   -0.1359497,
+      1.1368914,   0.09772497,   0.5829537,   -0.39944902,  0.37005588,
+      -1.3065269,  1.6581306,    -0.11816405, -0.6801782,   0.6663831,
+      -0.4607198,  -1.3342584,   -1.3467175,  0.69377315,   -0.15957344,
+      -0.13370156, 1.0777438,    -1.1268258,  -0.7306777,   -0.3848798,
+      0.09435159,  -0.042171452, -0.2868872,  -0.0616264,   -0.10730527};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {3, 4, 5};
   float output_0[3];
   const int32_t output_0_ndim = 1;
   const int32_t output_0_dims[] = {3};
   const float answer_0[] = {3, 4, 5};
-  ONNC_RUNTIME_shape_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                           (float *)output_0, output_0_ndim, output_0_dims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 3);
+  ONNC_RUNTIME_shape_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                           output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 3) < 1e-5f);
 }

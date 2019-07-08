@@ -1,74 +1,84 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Gemm, test_gemm_broadcast) {
-  const float input_0[] = {
-      0.9846647,   0.41222116, 0.4132404,  0.84322864, 0.8971509, 0.397122,
-      0.07958793,  0.8045958,  0.68694323, 0.15938434, 0.7684066, 0.65495163,
-      0.025296818, 0.66772777, 0.24758904, 0.2993065,  0.851995,  0.6836684};
+  const float input_0[] = {0.22312777,  0.23150592,  0.09712194,   0.56898665,
+                           0.027058031, 0.77833915,  0.52660453,   0.54812884,
+                           0.06893414,  0.59060514,  0.92518306,   0.7702066,
+                           0.5480127,   0.025578925, 0.0019006024, 0.71772593,
+                           0.24566254,  0.7418983};
   const int32_t input_0_ndim = 2;
   const int32_t input_0_dims[] = {6, 3};
   const float input_1[] = {
-      0.590627,   0.51895994, 0.64928883, 0.13320155, 0.46908915, 0.7478581,
-      0.6242087,  0.03219522, 0.1334937,  0.8251022,  0.6702302,  0.30658883,
-      0.91595304, 0.35950398, 0.6583853,  0.538852,   0.8218876,  0.67839795,
-      0.8955349,  0.32043648, 0.49136254, 0.7694568,  0.20773448, 0.9968269};
+      0.64321744,  0.5189654,   0.15376584, 0.3809103,  0.7027051, 0.8181692,
+      0.085290916, 0.11697551,  0.4943885,  0.14907348, 0.7296801, 0.033814617,
+      0.58706635,  0.27234018,  0.630503,   0.47218844, 0.8997227, 0.23078799,
+      0.72444135,  0.060256176, 0.30520287, 0.75890076, 0.8322442, 0.41969562};
   const int32_t input_1_ndim = 2;
   const int32_t input_1_dims[] = {4, 6};
-  const float input_2[] = {0.88694143};
+  const float input_2[] = {0.76684994};
   const int32_t input_2_ndim = 2;
   const int32_t input_2_dims[] = {1, 1};
   float output_0[12];
   const int32_t output_0_ndim = 2;
   const int32_t output_0_dims[] = {3, 4};
-  const float answer_0[] = {1.107362,  0.8897886, 1.2270582, 1.252151,
-                            1.5855795, 1.3116517, 1.8288132, 1.7590926,
-                            1.2488981, 1.0826633, 1.440351,  1.479346};
+  const float answer_0[] = {1.241954,  0.8124863, 1.1612016,  1.1645083,
+                            0.792732,  0.6128203, 0.88614786, 0.9649985,
+                            1.0727824, 0.5207758, 0.8079585,  0.9013057};
   const float alpha = 0.5;
   const float beta = 0.5;
   const int32_t transA = 1;
   const int32_t transB = 1;
-  ONNC_RUNTIME_gemm_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                          (float *)input_1, input_1_ndim, input_1_dims,
-                          (float *)input_2, input_2_ndim, input_2_dims,
-                          (float *)output_0, output_0_ndim, output_0_dims,
+  ONNC_RUNTIME_gemm_float(nullptr, input_0, input_0_ndim, input_0_dims, input_1,
+                          input_1_ndim, input_1_dims, input_2, input_2_ndim,
+                          input_2_dims, output_0, output_0_ndim, output_0_dims,
                           alpha, beta, transA, transB);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 12);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 12) < 1e-5f);
 }
 
 SKYPAT_F(Operator_Gemm, test_gemm_nobroadcast) {
   const float input_0[] = {
-      0.048550863, 0.038253393, 0.5028614,  0.80091286, 0.62644327, 0.08322072,
-      0.2280164,   0.06600759,  0.40633157, 0.61880034, 0.3978933,  0.5919173,
-      0.2367972,   0.97442883,  0.520165,   0.88901824, 0.91364247, 0.3485419};
+      0.2836221,  0.44631746, 0.840007,   0.8039922,  0.61284494, 0.33969662,
+      0.19262998, 0.13106087, 0.46343297, 0.93607354, 0.30602285, 0.08378214,
+      0.1881105,  0.5103931,  0.9529358,  0.2829104,  0.4307777,  0.93986344};
   const int32_t input_0_ndim = 2;
   const int32_t input_0_dims[] = {3, 6};
   const float input_1[] = {
-      0.52383524, 0.9135216,  0.2021727,   0.15064569, 0.3857679,  0.633115,
-      0.20874088, 0.35856307, 0.6470875,   0.93046755, 0.15542641, 0.48396268,
-      0.90474707, 0.61256987, 0.054745022, 0.13538757, 0.68729836, 0.070637584,
-      0.52751756, 0.5827395,  0.21985686,  0.53799474, 0.20967595, 0.31740355};
+      0.908622,   0.28591964, 0.96591485, 0.7096039,  0.018301018, 0.40913314,
+      0.4478458,  0.3564258,  0.91462654, 0.34151885, 0.069378965, 0.47709087,
+      0.5329583,  0.35884598, 0.6747385,  0.9000542,  0.42513716,  0.7279334,
+      0.24231969, 0.9308684,  0.7882367,  0.3754562,  0.71097964,  0.011795827};
   const int32_t input_1_ndim = 2;
   const int32_t input_1_dims[] = {6, 4};
-  const float input_2[] = {0.29799432, 0.16262197,  0.043119293, 0.7365098,
-                           0.48975602, 0.9070603,   0.8825669,   0.2838883,
-                           0.56895345, 0.055248644, 0.52655536,  0.8384052};
+  const float input_2[] = {0.2040662,  0.12247819, 0.44614524, 0.8516667,
+                           0.10367551, 0.24069467, 0.8468275,  0.48670757,
+                           0.15492749, 0.23786247, 0.8510444,  0.46253115};
   const int32_t input_2_ndim = 2;
   const int32_t input_2_dims[] = {3, 4};
   float output_0[12];
   const int32_t output_0_ndim = 2;
   const int32_t output_0_dims[] = {3, 4};
-  const float answer_0[] = {0.9185264,  0.6393635, 0.26541656, 0.75040376,
-                            0.93053055, 1.13042,   0.68674076, 0.52103895,
-                            1.4572015,  1.0845636, 0.73119617, 1.1193092};
+  const float answer_0[] = {1.0975156, 0.76760685, 0.9553833,  1.4554433,
+                            0.7,       0.5488954,  0.94453347, 1.009792,
+                            1.140762,  0.7969438,  1.1454673,  0.94964397};
   const float alpha = 0.5;
   const float beta = 0.5;
   const int32_t transA = 0;
   const int32_t transB = 0;
-  ONNC_RUNTIME_gemm_float(NULL, (float *)input_0, input_0_ndim, input_0_dims,
-                          (float *)input_1, input_1_ndim, input_1_dims,
-                          (float *)input_2, input_2_ndim, input_2_dims,
-                          (float *)output_0, output_0_ndim, output_0_dims,
+  ONNC_RUNTIME_gemm_float(nullptr, input_0, input_0_ndim, input_0_dims, input_1,
+                          input_1_ndim, input_1_dims, input_2, input_2_ndim,
+                          input_2_dims, output_0, output_0_ndim, output_0_dims,
                           alpha, beta, transA, transB);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 12);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 12) < 1e-5f);
 }

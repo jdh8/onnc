@@ -1,32 +1,43 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_GlobalMaxPool, test_globalmaxpool) {
   const float input_0[] = {
-      1.1108521,    -0.50862503, -1.9040097,   0.1331632,   -0.8712103,
-      -0.56641287,  0.30302185,  0.60263467,   0.17543401,  1.1548538,
-      0.12736987,   0.14465179,  -0.3660881,   -1.2313704,  -1.7279515,
-      -0.11797951,  0.20669039,  -0.104380004, -1.3352494,  0.91737807,
-      0.4346684,    0.6458108,   1.0684626,    0.6599948,   -1.7442441,
-      0.89103776,   -0.22473164, -1.3528008,   -1.5692697,  -0.5895785,
-      -1.1487094,   2.3246582,   0.29465395,   -1.2847518,  -0.066621855,
-      0.9597055,    1.9399793,   0.30650204,   0.041833814, -0.77056676,
-      0.0018871854, -0.14570256, -0.96206015,  -0.43955913, -0.15048596,
-      0.5083416,    0.34059465,  -0.16138114,  2.9060051,   0.087026924,
-      -1.7481132,   0.73722845,  -0.5751749,   -0.39055324, -0.8327984,
-      0.09218807,   0.6879098,   0.03604427,   0.13612105,  -0.2114216,
-      -3.3439965,   -2.256245,   -1.3305064,   -0.8161114,  -0.22423926,
-      0.080074415,  -1.261829,   0.1633435,    -0.91764873, 1.3786488,
-      -0.32507843,  -1.3298937,  -0.7056289,   0.3046201,   1.1106795};
+      -0.60048956, -0.3716759,   0.09686587,   0.65437484,  -0.6850437,
+      0.4780829,   0.12327978,   -0.010199084, -0.2776904,  -0.5138352,
+      -0.12905546, 0.4055289,    0.64954036,   -2.5811522,  -0.9236393,
+      -0.19717097, 0.9036997,    0.7412384,    -0.69870496, 0.15720206,
+      -0.26742136, -0.67631567,  -0.62528664,  0.8614552,   0.6357043,
+      0.62112105,  -0.088566944, 0.25622255,   0.62810016,  -0.039971128,
+      0.6799171,   0.2152898,    -1.1749362,   -0.55478823, 1.5063831,
+      -0.98560816, -0.35703638,  0.7106753,    1.2965134,   0.9380299,
+      1.4703128,   0.78813547,   -0.6837286,   -0.40982845, 0.8719,
+      -0.32820192, 1.4308844,    0.64265925,   1.3501347,   -2.0160997,
+      -0.7270879,  -0.26440874,  -0.962425,    -1.3569583,  -1.8202405,
+      -0.4793852,  0.014338666,  0.7384035,    0.4146642,   -1.2434458,
+      0.9588446,   -1.356443,    -0.8003409,   0.76651335,  0.700837,
+      -1.5830505,  1.1334488,    -1.2265819,   -0.2647046,  -0.928538,
+      -0.7889352,  -0.053240415, 0.07711309,   -2.2553563,  -0.35298777};
   const int32_t input_0_ndim = 4;
   const int32_t input_0_dims[] = {1, 3, 5, 5};
   float output_0[3];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 3, 1, 1};
-  const float answer_0[] = {1.1548538, 2.9060051, 1.3786488};
-  ONNC_RUNTIME_globalmaxpool_float(NULL, (float *)input_0, input_0_ndim,
-                                   input_0_dims, (float *)output_0,
-                                   output_0_ndim, output_0_dims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 3);
+  const float answer_0[] = {0.9036997, 1.5063831, 1.1334488};
+  ONNC_RUNTIME_globalmaxpool_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                                   output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 3) < 1e-5f);
 }
 
 SKYPAT_F(Operator_GlobalMaxPool, test_globalmaxpool_precomputed) {
@@ -37,9 +48,7 @@ SKYPAT_F(Operator_GlobalMaxPool, test_globalmaxpool_precomputed) {
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {1, 1, 1, 1};
   const float answer_0[] = {9.0};
-  ONNC_RUNTIME_globalmaxpool_float(NULL, (float *)input_0, input_0_ndim,
-                                   input_0_dims, (float *)output_0,
-                                   output_0_ndim, output_0_dims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 1);
+  ONNC_RUNTIME_globalmaxpool_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                                   output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 1) < 1e-5f);
 }

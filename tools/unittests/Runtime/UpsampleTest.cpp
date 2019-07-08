@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_Upsample, test_upsample_nearest) {
   const float input_0[] = {1.0, 2.0, 3.0, 4.0};
   const int32_t input_0_ndim = 4;
@@ -9,12 +22,11 @@ SKYPAT_F(Operator_Upsample, test_upsample_nearest) {
   const float answer_0[] = {1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 1.0, 1.0,
                             1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0,
                             4.0, 4.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0};
-  const auto mode = "nearest";
+  const char mode[] = "nearest";
   const float scales[] = {1.0, 1.0, 2.0, 3.0};
   const int32_t number_of_scales = 4;
-  ONNC_RUNTIME_upsample_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, mode, (float *)scales, number_of_scales);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 24);
+  ONNC_RUNTIME_upsample_float(nullptr, input_0, input_0_ndim, input_0_dims,
+                              output_0, output_0_ndim, output_0_dims, mode,
+                              const_cast<float *>(scales), number_of_scales);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 24) < 1e-5f);
 }

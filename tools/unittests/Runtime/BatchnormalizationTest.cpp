@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_BatchNormalization, test_batchnorm_example) {
   const float input_0[] = {-1.0, 0.0, 1.0, 2.0, 3.0, 4.0};
   const int32_t input_0_ndim = 4;
@@ -20,126 +33,122 @@ SKYPAT_F(Operator_BatchNormalization, test_batchnorm_example) {
   const int32_t output_0_dims[] = {1, 2, 1, 3};
   const float answer_0[] = {-0.999995,   0.0, 0.999995,
                             -0.22474074, 1.0, 2.2247407};
-  const float output_1[] = {};
+  float *output_1 = nullptr;
   const int32_t output_1_ndim = 0;
-  const int32_t output_1_dims[] = {};
-  const float output_2[] = {};
+  const int32_t *output_1_dims = nullptr;
+  float *output_2 = nullptr;
   const int32_t output_2_ndim = 0;
-  const int32_t output_2_dims[] = {};
-  const float output_3[] = {};
+  const int32_t *output_2_dims = nullptr;
+  float *output_3 = nullptr;
   const int32_t output_3_ndim = 0;
-  const int32_t output_3_dims[] = {};
-  const float output_4[] = {};
+  const int32_t *output_3_dims = nullptr;
+  float *output_4 = nullptr;
   const int32_t output_4_ndim = 0;
-  const int32_t output_4_dims[] = {};
-  const int32_t spatial = 0;
-  const float momentum = 0;
-  const float epsilon = 0;
+  const int32_t *output_4_dims = nullptr;
+  const float momentum = 0.9;
+  const float epsilon = 1e-05;
+  const int32_t spatial = 1;
   ONNC_RUNTIME_batchnormalization_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)input_3, input_3_ndim, input_3_dims, (float *)input_4,
-      input_4_ndim, input_4_dims, (float *)output_0, output_0_ndim,
-      output_0_dims, (float *)output_1, output_1_ndim, output_1_dims,
-      (float *)output_2, output_2_ndim, output_2_dims, (float *)output_3,
-      output_3_ndim, output_3_dims, (float *)output_4, output_4_ndim,
-      output_4_dims, epsilon, momentum, spatial);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 6);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, input_3, input_3_ndim,
+      input_3_dims, input_4, input_4_ndim, input_4_dims, output_0,
+      output_0_ndim, output_0_dims, output_1, output_1_ndim, output_1_dims,
+      output_2, output_2_ndim, output_2_dims, output_3, output_3_ndim,
+      output_3_dims, output_4, output_4_ndim, output_4_dims, epsilon, momentum,
+      spatial);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 6) < 1e-5f);
 }
 
 SKYPAT_F(Operator_BatchNormalization, test_batchnorm_epsilon) {
   const float input_0[] = {
-      -0.62805635,  0.79715514,  1.4931481,   -0.21843122, 0.24073194,
-      0.80366343,   -2.0132728,  1.4697065,   1.51092,     -1.812751,
-      1.4668785,    -2.287044,   -0.36540797, 0.016963094, -1.2519028,
-      0.6261822,    0.09913124,  0.22666802,  -0.29512343, -1.3370225,
-      -1.0468496,   -1.9296511,  -0.45711595, 2.0399337,   0.5052602,
-      -1.9968128,   0.9024503,   1.1141491,   -0.20060998, -0.4082986,
-      0.22819048,   1.4659483,   1.887411,    -0.51114786, -0.47570837,
-      -0.7759874,   -0.7079053,  1.0927674,   -0.04264211, -0.12961113,
-      -0.66181105,  0.04338665,  -1.0605164,  1.8929648,   -0.98793787,
-      -0.1180752,   0.8361751,   0.8265745,   1.6693792,   0.36219582,
-      -0.071045674, -0.56905866, 1.8875214,   0.66933864,  2.1415083,
-      -0.061154667, -0.9681008,  -0.326678,   1.542832,    0.47700012,
-      1.076754,     0.18056513,  -0.63766223, 0.22185576,  -1.4285206,
-      -1.2920554,   -0.9879347,  0.664247,    -1.0384481,  -1.2564831,
-      -1.7584897,   2.1671808,   -0.57657903, 1.1453364,   -2.1040883,
-      0.9107052,    -0.7439822,  0.7763961,   -0.72390425, -1.0335757,
-      -0.2650163,   -0.55045426, 1.3469605,   -1.4175599,  -0.87946427,
-      -1.8336893,   0.500727,    0.8055791,   0.9364005,   0.4251598,
-      0.020420583,  -1.3634576,  -0.24492845, -1.8026285,  1.6915708,
-      1.104161,     0.8652972,   0.39394796,  0.5334181,   1.9145999,
-      0.26876262,   1.2987323,   1.4221952,   0.9865109,   -1.2056373,
-      -0.1440221,   -0.29712388, -1.4386973,  1.2322553,   -1.6127064,
-      -1.1419197,   -0.69758195, -1.5606647,  -0.82928306, 0.18537109,
-      0.29513776,   0.6746203,   -0.18160562, 0.86400235,  -0.63870436};
+      0.12720749,   0.24011827,   0.41554886,   1.1089969,   0.37565812,
+      0.35067886,   1.6400052,    -0.020686155, 0.113805585, 0.6595625,
+      -0.4697461,   -0.21400325,  -1.2813069,   -0.27434728, 0.31804737,
+      -0.49228933,  -1.5201946,   -0.56937575,  1.0642467,   -1.0146477,
+      0.48463553,   0.717592,     0.37175968,   -0.21955496, -0.9694688,
+      -1.3218777,   -0.069124706, 0.43547347,   1.3544043,   -0.6818406,
+      0.6706589,    -0.25754258,  0.7888503,    0.6066892,   -0.12892482,
+      -1.515976,    -2.1773229,   -0.68057746,  0.064037345, -1.0445164,
+      -0.51915276,  -2.3026764,   -0.2065071,   1.053149,    0.94363886,
+      1.3124249,    -0.45423606,  -0.8652938,   -0.5129792,  0.72240144,
+      0.9247332,    -0.902032,    1.472125,     0.38777274,  0.50526184,
+      1.235763,     0.3783654,    -0.859544,    0.91754115,  1.7952868,
+      -0.3122873,   1.2230458,    0.63667345,   -0.99439085, 0.97975254,
+      -2.574016,    0.13151146,   0.16448632,   -0.9646202,  0.595002,
+      0.34924948,   -2.0126672,   0.05899725,   1.3334204,   0.07755805,
+      0.06199347,   -1.3674537,   -0.41596422,  0.6219352,   -0.8253829,
+      -0.066026255, -0.711218,    -0.64055145,  -0.48707798, 0.9184056,
+      3.0148377,    -0.35512352,  -0.19357726,  -0.26136437, -1.3107945,
+      0.9858395,    1.7711403,    0.029979357,  0.7948592,   -0.9444986,
+      0.3704488,    0.17649686,   -1.6922626,   0.8019865,   2.2666566,
+      -0.2687776,   1.5937047,    -0.31786177,  -2.0791116,  0.062043175,
+      -0.023485726, -0.7747892,   -0.07478719,  1.3114692,   1.4714106,
+      -0.35753003,  0.04850378,   0.15614873,   0.19668114,  -0.0110038,
+      -2.8637824,   1.2981112,    0.8541351,    0.48897058,  -0.58150893};
   const int32_t input_0_ndim = 4;
   const int32_t input_0_dims[] = {2, 3, 4, 5};
-  const float input_1[] = {-0.43897334, 1.4216152, 0.83289856};
+  const float input_1[] = {2.5602775, -1.5908637, 0.024780162};
   const int32_t input_1_ndim = 1;
   const int32_t input_1_dims[] = {3};
-  const float input_2[] = {1.5007718, -0.900441, -1.4958694};
+  const float input_2[] = {0.76993835, -1.8030912, -0.16378976};
   const int32_t input_2_ndim = 1;
   const int32_t input_2_dims[] = {3};
-  const float input_3[] = {0.54763097, 1.3479253, 0.84890485};
+  const float input_3[] = {-0.13326642, 0.7655654, 1.2776277};
   const int32_t input_3_ndim = 1;
   const int32_t input_3_dims[] = {3};
-  const float input_4[] = {0.9359342, 0.13282038, 0.05419626};
+  const float input_4[] = {0.5060962, 0.10985571, 0.25181925};
   const int32_t input_4_ndim = 1;
   const int32_t input_4_dims[] = {3};
   float output_0[120];
   const int32_t output_0_ndim = 4;
   const int32_t output_0_dims[] = {2, 3, 4, 5};
   const float answer_0[] = {
-      2.0314112,  1.3881506,    1.0740182,   1.8465294,   1.6392888,
-      1.385213,   2.6566205,    1.0845985,   1.065997,    2.566116,
-      1.0858748,  2.7801852,    1.9128664,   1.7402855,   2.3129807,
-      1.4653181,  1.7031994,    1.6456364,   1.8811439,   2.351399,
-      -9.908924,  -13.229779,   -7.6905084,  1.7027037,   -4.0703144,
-      -13.482423, -2.576195,    -1.7798426,  -6.725604,   -7.506871,
-      -5.1125746, -0.45647088,  1.1289554,   -7.8937616,  -7.760448,
-      -8.890015,  -8.633908,    -1.8602748,  -6.1313725,  -6.458526,
-      -6.462022,  -4.143837,    -7.7726793,  1.9362526,   -7.534093,
-      -4.6746073, -1.5377158,   -1.5692756,  1.2012632,   -3.0958202,
-      -4.520008,  -6.157119,    1.9183583,   -2.0861545,  2.7532856,
-      -4.4874935, -7.4688835,   -5.3603444,  0.7852664,   -2.7184258,
-      1.2619553,  1.6664448,    2.0357468,   1.6478084,   2.392696,
-      2.3311033,  2.19384,      1.4481379,   2.216639,    2.3150477,
-      2.5416255,  0.7697977,    2.0081773,   1.231001,    2.6976094,
-      1.3369004,  2.0837336,    1.39752,     2.0746715,   2.2144399,
-      -6.9678826, -8.041621,    -0.90407014, -11.303434,  -9.279266,
-      -12.868797, -4.0873675,   -2.9405978,  -2.448484,   -4.3716307,
-      -5.894148,  -11.0999155,  -6.892318,   -12.751955,  0.39225847,
-      -1.817415,  -2.7159548,   -4.489041,   -3.9643924,  1.2312326,
-      -3.4029617, -0.017158866, 0.38869882,  -1.0435193,  -8.249733,
-      -4.7599025, -5.2631917,   -9.015868,   -0.23568738, -9.587885,
-      -8.040276,  -6.579611,    -9.416809,   -7.0125494,  -3.6770933,
-      -3.3162591, -2.0687923,   -4.88345,    -1.4462396,  -6.3860636};
-  const float output_1[] = {};
+      1.6982332,   2.1006324,   2.725844,    5.1972017,   2.5836787,
+      2.4946558,   7.0896463,   1.1711596,   1.6504705,   3.5954766,
+      -0.42923117, 0.4822029,   -3.321527,   0.26714468,  2.3783615,
+      -0.50957227, -4.1728916,  -0.7842982,  5.0377183,   -2.371189,
+      -0.5121647,  -1.5826442,  0.006521344, 2.7237253,   6.169723,
+      7.789109,    2.0324693,   -0.28625548, -4.508919,   4.8480167,
+      -1.3669776,  2.8982859,   -1.9100897,  -1.0730247,  2.307263,
+      8.681028,    11.720044,   4.842212,    1.4205648,   6.5145817,
+      -0.25080562, -0.33717945, -0.23566458, -0.174661,   -0.17996442,
+      -0.16210458, -0.24766177, -0.2675688,  -0.25050664, -0.19067869,
+      -0.18088001, -0.269348,   -0.1543705,  -0.20688434, -0.2011945,
+      -0.16581722, -0.20733993, -0.26729035, -0.18122831, -0.13872017,
+      0.13193142,  5.6036577,   3.5139031,   -2.298996,   4.7365923,
+      -7.9285736,  1.713572,    1.8310901,   -2.1928978,  3.3653913,
+      2.4895616,   -5.927999,   1.4551408,   5.997018,    1.5212891,
+      1.4658189,   -3.628543,   -0.23755956, 3.4613776,   -1.6966742,
+      2.0182319,   4.9830117,   4.6582847,   3.953045,    -2.5054212,
+      -12.138927,  3.3466892,   2.6043534,   2.9158478,   7.738179,
+      -2.8152928,  -6.4239,     1.5770675,   -1.9377017,  6.05498,
+      0.012545228, 0.90379155,  9.491099,    -1.9704531,  -8.700892,
+      -0.23868026, -0.14848255, -0.24105734, -0.32635248, -0.22265902,
+      -0.22680107, -0.26318577, -0.22928554, -0.16215086, -0.1544051,
+      -0.24297842, -0.22331472, -0.2181016,  -0.21613866, -0.22619659,
+      -0.36435312, -0.16279778, -0.18429899, -0.20198345, -0.25382543};
+  float *output_1 = nullptr;
   const int32_t output_1_ndim = 0;
-  const int32_t output_1_dims[] = {};
-  const float output_2[] = {};
+  const int32_t *output_1_dims = nullptr;
+  float *output_2 = nullptr;
   const int32_t output_2_ndim = 0;
-  const int32_t output_2_dims[] = {};
-  const float output_3[] = {};
+  const int32_t *output_2_dims = nullptr;
+  float *output_3 = nullptr;
   const int32_t output_3_ndim = 0;
-  const int32_t output_3_dims[] = {};
-  const float output_4[] = {};
+  const int32_t *output_3_dims = nullptr;
+  float *output_4 = nullptr;
   const int32_t output_4_ndim = 0;
-  const int32_t output_4_dims[] = {};
+  const int32_t *output_4_dims = nullptr;
   const float epsilon = 0.009999999776482582;
-  const int32_t spatial = 0;
-  const float momentum = 0;
+  const float momentum = 0.9;
+  const int32_t spatial = 1;
   ONNC_RUNTIME_batchnormalization_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)input_1,
-      input_1_ndim, input_1_dims, (float *)input_2, input_2_ndim, input_2_dims,
-      (float *)input_3, input_3_ndim, input_3_dims, (float *)input_4,
-      input_4_ndim, input_4_dims, (float *)output_0, output_0_ndim,
-      output_0_dims, (float *)output_1, output_1_ndim, output_1_dims,
-      (float *)output_2, output_2_ndim, output_2_dims, (float *)output_3,
-      output_3_ndim, output_3_dims, (float *)output_4, output_4_ndim,
-      output_4_dims, epsilon, momentum, spatial);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 120);
+      nullptr, input_0, input_0_ndim, input_0_dims, input_1, input_1_ndim,
+      input_1_dims, input_2, input_2_ndim, input_2_dims, input_3, input_3_ndim,
+      input_3_dims, input_4, input_4_ndim, input_4_dims, output_0,
+      output_0_ndim, output_0_dims, output_1, output_1_ndim, output_1_dims,
+      output_2, output_2_ndim, output_2_dims, output_3, output_3_ndim,
+      output_3_dims, output_4, output_4_ndim, output_4_dims, epsilon, momentum,
+      spatial);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 120) < 1e-5f);
 }

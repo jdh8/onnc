@@ -1,4 +1,17 @@
-#include "dragonite.hpp"
+#if defined(__GNUC__) || defined(_MSC_VER)
+#define restrict __restrict
+#else
+#define restrict
+#endif
+
+extern "C" {
+#include <onnc/Runtime/onnc-runtime.h>
+}
+
+#undef restrict
+
+#include "relative-error.hpp"
+#include <skypat/skypat.h>
 SKYPAT_F(Operator_ReduceLogSumExp,
          test_reduce_log_sum_exp_do_not_keepdims_example) {
   const float input_0[] = {5.0,  1.0, 20.0, 2.0, 30.0, 1.0,
@@ -14,10 +27,9 @@ SKYPAT_F(Operator_ReduceLogSumExp,
   const int32_t number_of_axes = 1;
   const int32_t keepdims = 0;
   ONNC_RUNTIME_reducelogsumexp_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, (int32_t *)axes, number_of_axes, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 6);
+      nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim,
+      output_0_dims, const_cast<int32_t *>(axes), number_of_axes, keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 6) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ReduceLogSumExp,
@@ -36,10 +48,9 @@ SKYPAT_F(Operator_ReduceLogSumExp,
   const int32_t number_of_axes = 1;
   const int32_t keepdims = 0;
   ONNC_RUNTIME_reducelogsumexp_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, (int32_t *)axes, number_of_axes, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 6);
+      nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim,
+      output_0_dims, const_cast<int32_t *>(axes), number_of_axes, keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 6) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ReduceLogSumExp, test_reduce_log_sum_exp_keepdims_example) {
@@ -56,10 +67,9 @@ SKYPAT_F(Operator_ReduceLogSumExp, test_reduce_log_sum_exp_keepdims_example) {
   const int32_t number_of_axes = 1;
   const int32_t keepdims = 1;
   ONNC_RUNTIME_reducelogsumexp_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, (int32_t *)axes, number_of_axes, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 6);
+      nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim,
+      output_0_dims, const_cast<int32_t *>(axes), number_of_axes, keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 6) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ReduceLogSumExp, test_reduce_log_sum_exp_keepdims_random) {
@@ -77,10 +87,9 @@ SKYPAT_F(Operator_ReduceLogSumExp, test_reduce_log_sum_exp_keepdims_random) {
   const int32_t number_of_axes = 1;
   const int32_t keepdims = 1;
   ONNC_RUNTIME_reducelogsumexp_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, (int32_t *)axes, number_of_axes, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 6);
+      nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim,
+      output_0_dims, const_cast<int32_t *>(axes), number_of_axes, keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 6) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ReduceLogSumExp,
@@ -94,13 +103,12 @@ SKYPAT_F(Operator_ReduceLogSumExp,
   const int32_t output_0_dims[] = {1, 1, 1};
   const float answer_0[] = {60.006714};
   const int32_t keepdims = 1;
-  const int32_t axes[] = {};
-  const int32_t number_of_axes = 0;
+  const int32_t axes[] = {0, 1, 2};
+  const int32_t number_of_axes = 3;
   ONNC_RUNTIME_reducelogsumexp_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, (int32_t *)axes, number_of_axes, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 1);
+      nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim,
+      output_0_dims, const_cast<int32_t *>(axes), number_of_axes, keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 1) < 1e-5f);
 }
 
 SKYPAT_F(Operator_ReduceLogSumExp,
@@ -115,11 +123,10 @@ SKYPAT_F(Operator_ReduceLogSumExp,
   const int32_t output_0_dims[] = {1, 1, 1};
   const float answer_0[] = {9.519862};
   const int32_t keepdims = 1;
-  const int32_t axes[] = {};
-  const int32_t number_of_axes = 0;
+  const int32_t axes[] = {0, 1, 2};
+  const int32_t number_of_axes = 3;
   ONNC_RUNTIME_reducelogsumexp_float(
-      NULL, (float *)input_0, input_0_ndim, input_0_dims, (float *)output_0,
-      output_0_ndim, output_0_dims, (int32_t *)axes, number_of_axes, keepdims);
-  (dragonite::verify)(reinterpret_cast<float *>(output_0),
-                      reinterpret_cast<const float *>(answer_0), 1);
+      nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim,
+      output_0_dims, const_cast<int32_t *>(axes), number_of_axes, keepdims);
+  ASSERT_TRUE(relative_error(output_0, answer_0, 1) < 1e-5f);
 }
