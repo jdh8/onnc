@@ -1,23 +1,17 @@
-#include <onnc/Runtime/operator/greater.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
 
-void ONNC_RUNTIME_greater_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_A
-  ,int32_t input_A_ndim, const int32_t * restrict input_A_dims
-  ,const float * restrict input_B
-  ,int32_t input_B_ndim, const int32_t * restrict input_B_dims
-  ,float * restrict output_C
-  ,int32_t output_C_ndim, const int32_t * restrict output_C_dims
-  
-) {
-	int32_t size = 1 ;
-	for(int32_t i = 0 ; i < input_A_ndim ; ++i){
-		size *= input_A_dims[i] ;
-	}
-	for(int32_t i = 0 ; i < size ; ++i){
-		output_C[i] = (input_A[i] > input_B[i]); 
-	}
+#include "generic/compare.h"
+
+static float greater_(float x, float y)
+{
+    return x > y;
+}
+
+void ONNC_RUNTIME_greater_float(void* restrict context,
+    const float* restrict A, int32_t Adim, const int32_t* restrict Ashape,
+    const float* restrict B, int32_t Bdim, const int32_t* restrict Bshape,
+    float* restrict C, int32_t Cdim, const int32_t* restrict Cshape)
+{
+    ONNC_COMPARE(float, float, C, Cshape, Cdim, A, Ashape, Adim, B, Bshape, Bdim, greater_);
 }
