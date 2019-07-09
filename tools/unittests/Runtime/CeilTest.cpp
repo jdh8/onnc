@@ -1,7 +1,7 @@
 #if defined(__GNUC__) || defined(_MSC_VER)
-#define restrict __restrict
+#  define restrict __restrict
 #else
-#define restrict
+#  define restrict
 #endif
 
 extern "C" {
@@ -10,47 +10,45 @@ extern "C" {
 
 #undef restrict
 
-#include "relative-error.hpp"
+#include "norm.hpp"
 #include <skypat/skypat.h>
-SKYPAT_F(Operator_Ceil, test_ceil_example) {
-  const float input_0[] = {-1.5, 1.2};
-  const int32_t input_0_ndim = 1;
+SKYPAT_F(Operator_Ceil, test_ceil_example)
+{
+  const float   input_0[]      = {-1.5, 1.2};
+  const int32_t input_0_ndim   = 1;
   const int32_t input_0_dims[] = {2};
-  float output_0[2];
-  const int32_t output_0_ndim = 1;
+  float         output_0[2];
+  const int32_t output_0_ndim   = 1;
   const int32_t output_0_dims[] = {2};
-  const float answer_0[] = {-1.0, 2.0};
-  ONNC_RUNTIME_ceil_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                          output_0, output_0_ndim, output_0_dims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
+  const float   answer_0[]      = {-1.0, 2.0};
+  using dragonite::norm;
+
+  ONNC_RUNTIME_ceil_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(norm(answer_0, output_0, 2) <= 1e-5 * norm(answer_0, 2));
 }
 
-SKYPAT_F(Operator_Ceil, test_ceil) {
-  const float input_0[] = {
-      0.16223462,  0.15332793,  -0.13029309, 0.34906998, -0.6768123,
-      -0.7207275,  0.08517971,  -0.3612139,  -1.4433739, 0.76441133,
-      -0.4569049,  0.7207717,   -0.17805362, -1.1828744, 0.27450225,
-      -0.3034686,  0.36677924,  1.5298203,   0.24831347, 1.484716,
-      0.5792381,   -0.68763137, 1.7820652,   0.18057254, 0.3793179,
-      -1.989423,   -2.4868584,  0.14978306,  -0.8701113, 1.0312272,
-      0.5692347,   0.20478432,  -0.61507565, -1.5093771, -1.3689855,
-      0.6116965,   0.18798667,  -1.358859,   0.41533715, 2.3681664,
-      -0.5262861,  0.7983595,   1.2968984,   1.3005514,  -2.1909342,
-      -0.9271853,  1.3270583,   -1.3597348,  -2.202468,  -0.7181976,
-      -0.15122393, 0.49586654,  -0.53494525, 0.7376397,  -1.1293029,
-      1.115224,    -0.33622843, 0.6012759,   -0.7270101, 0.033193763};
+SKYPAT_F(Operator_Ceil, test_ceil)
+{
+  const float   input_0[]    = {-0.62570953, 1.5038661,  0.7640843,    -0.30335107, 0.93182844,  0.7958858,   0.0156944,
+                           -0.8517502,  1.027754,   -0.9683663,   -0.3813998,  1.6041071,   -1.5635489,  0.7992253,
+                           -1.0148742,  1.319775,   -0.22813076,  -0.77204716, -1.8308418,  0.95056444,  -0.18971139,
+                           0.95921713,  0.757848,   -0.088560656, -1.8759845,  -0.73429394, -0.6180225,  1.1465452,
+                           -0.06142981, 0.5096739,  -1.4545399,   -0.8795726,  -1.385671,   0.93072134,  -0.33945352,
+                           0.42733204,  -1.1587467, 0.74799466,   1.075383,    -2.310082,   -0.52665675, -0.7393321,
+                           -0.90235144, 1.342023,   0.321275,     1.6229383,   -1.3479812,  -0.73660624, 0.59926444,
+                           1.0017334,   1.2911106,  2.8412082,    1.3923782,   -0.520014,   -2.4214816,  0.34726074,
+                           0.6103141,   -0.3909978, 0.61465085,   0.21777147};
   const int32_t input_0_ndim = 3;
   const int32_t input_0_dims[] = {3, 4, 5};
-  float output_0[60];
-  const int32_t output_0_ndim = 3;
+  float         output_0[60];
+  const int32_t output_0_ndim   = 3;
   const int32_t output_0_dims[] = {3, 4, 5};
-  const float answer_0[] = {
-      1.0,  1.0,  -0.0, 1.0,  -0.0, -0.0, 1.0,  -0.0, -1.0, 1.0,  -0.0, 1.0,
-      -0.0, -1.0, 1.0,  -0.0, 1.0,  2.0,  1.0,  2.0,  1.0,  -0.0, 2.0,  1.0,
-      1.0,  -1.0, -2.0, 1.0,  -0.0, 2.0,  1.0,  1.0,  -0.0, -1.0, -1.0, 1.0,
-      1.0,  -1.0, 1.0,  3.0,  -0.0, 1.0,  2.0,  2.0,  -2.0, -0.0, 2.0,  -1.0,
-      -2.0, -0.0, -0.0, 1.0,  -0.0, 1.0,  -1.0, 2.0,  -0.0, 1.0,  -0.0, 1.0};
-  ONNC_RUNTIME_ceil_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                          output_0, output_0_ndim, output_0_dims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 60) < 1e-5f);
+  const float   answer_0[] = {-0.0, 2.0,  1.0,  -0.0, 1.0,  1.0,  1.0,  -0.0, 2.0,  -0.0, -0.0, 2.0,  -1.0, 1.0,  -1.0,
+                            2.0,  -0.0, -0.0, -1.0, 1.0,  -0.0, 1.0,  1.0,  -0.0, -1.0, -0.0, -0.0, 2.0,  -0.0, 1.0,
+                            -1.0, -0.0, -1.0, 1.0,  -0.0, 1.0,  -1.0, 1.0,  2.0,  -2.0, -0.0, -0.0, -0.0, 2.0,  1.0,
+                            2.0,  -1.0, -0.0, 1.0,  2.0,  2.0,  3.0,  2.0,  -0.0, -2.0, 1.0,  1.0,  -0.0, 1.0,  1.0};
+  using dragonite::norm;
+
+  ONNC_RUNTIME_ceil_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims);
+  ASSERT_TRUE(norm(answer_0, output_0, 60) <= 1e-5 * norm(answer_0, 60));
 }

@@ -1,7 +1,7 @@
 #if defined(__GNUC__) || defined(_MSC_VER)
-#define restrict __restrict
+#  define restrict __restrict
 #else
-#define restrict
+#  define restrict
 #endif
 
 extern "C" {
@@ -10,64 +10,60 @@ extern "C" {
 
 #undef restrict
 
-#include "relative-error.hpp"
+#include "norm.hpp"
 #include <skypat/skypat.h>
-SKYPAT_F(Operator_Dropout, test_dropout_default) {
-  const float input_0[] = {-1.0, 0.0, 1.0};
-  const int32_t input_0_ndim = 1;
-  const int32_t input_0_dims[] = {3};
-  float output_0[3];
-  const int32_t output_0_ndim = 1;
-  const int32_t output_0_dims[] = {3};
-  const float answer_0[] = {-1.0, 0.0, 1.0};
-  float *output_1 = nullptr;
-  const int32_t output_1_ndim = 0;
-  const int32_t *output_1_dims = nullptr;
-  const float ratio = 0.5;
-  ONNC_RUNTIME_dropout_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                             output_0, output_0_ndim, output_0_dims, output_1,
-                             output_1_ndim, output_1_dims, ratio);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 3) < 1e-5f);
+SKYPAT_F(Operator_Dropout, test_dropout_default)
+{
+  const float    input_0[]      = {-1.0, 0.0, 1.0};
+  const int32_t  input_0_ndim   = 1;
+  const int32_t  input_0_dims[] = {3};
+  float          output_0[3];
+  const int32_t  output_0_ndim   = 1;
+  const int32_t  output_0_dims[] = {3};
+  const float    answer_0[]      = {-1.0, 0.0, 1.0};
+  float*         output_1        = nullptr;
+  const int32_t  output_1_ndim   = 0;
+  const int32_t* output_1_dims   = nullptr;
+  const float    ratio           = 0.5;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_dropout_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims,
+                             output_1, output_1_ndim, output_1_dims, ratio);
+  ASSERT_TRUE(norm(answer_0, output_0, 3) <= 1e-5 * norm(answer_0, 3));
 }
 
-SKYPAT_F(Operator_Dropout, test_dropout_random) {
-  const float input_0[] = {
-      -1.0099195,  -0.21510866, -0.8487644,  0.0689584,   -0.84181595,
-      0.15988688,  -1.4302088,  -0.7684832,  0.05220989,  -0.05617211,
-      -0.41293442, -1.2829283,  0.08970178,  0.7575036,   -1.6625646,
-      0.58224577,  -2.3422565,  -0.9072342,  -0.26166162, 0.23445846,
-      1.1196798,   1.9989598,   2.8069956,   1.9024451,   -0.6563917,
-      -0.13344143, 1.4208083,   1.0365888,   -0.7740558,  -0.22300357,
-      0.73067385,  -0.18704073, 0.44298574,  0.49447903,  0.53376937,
-      0.23053971,  1.4963183,   -0.6791098,  0.12547445,  -0.41390848,
-      -0.76128393, 0.001573253, -0.93807477, -0.8100785,  -0.8822975,
-      0.22501919,  -0.04203527, 0.2761645,   -0.7175326,  -1.4917359,
-      0.9577058,   0.632635,    0.43549782,  -0.77620095, 1.003674,
-      -0.71483773, -0.29408157, -0.69374084, 0.052461136, 0.032689545};
-  const int32_t input_0_ndim = 3;
+SKYPAT_F(Operator_Dropout, test_dropout_random)
+{
+  const float input_0[] = {0.21913064,   0.422912,     -0.17104515, -1.3605666,   0.14346683,  -1.2587612, -0.85431975,
+                           -0.22751275,  -0.64637554,  -0.45032373, -0.10775222,  -0.76326144, 1.0841749,  0.30420542,
+                           0.44229716,   0.25023687,   1.0449243,   0.79727334,   -0.6503414,  0.28584188, 1.046587,
+                           -0.008671912, -0.37746236,  0.9519747,   0.70915437,   0.25513855,  1.2579945,  1.4754281,
+                           0.5708053,    0.20261957,   0.4378326,   -1.6589772,   -0.2461237,  0.235529,   1.531749,
+                           0.42461044,   -1.0146405,   -0.3018211,  -1.3695605,   -1.0796733,  0.979188,   1.0406072,
+                           -0.37996766,  -0.025551941, 0.2735519,   0.21806403,   -0.82011783, -0.2031602, -0.1936051,
+                           -1.1706306,   -0.21356732,  -0.3992815,  -0.114497565, -0.57213366, 0.5060143,  -0.5048138,
+                           -1.3871502,   -0.3178443,   -0.73051125, -0.5051671};
+  const int32_t input_0_ndim   = 3;
   const int32_t input_0_dims[] = {3, 4, 5};
-  float output_0[60];
-  const int32_t output_0_ndim = 3;
+  float         output_0[60];
+  const int32_t output_0_ndim   = 3;
   const int32_t output_0_dims[] = {3, 4, 5};
-  const float answer_0[] = {
-      -1.0099195,  -0.21510866, -0.8487644,  0.0689584,   -0.84181595,
-      0.15988688,  -1.4302088,  -0.7684832,  0.05220989,  -0.05617211,
-      -0.41293442, -1.2829283,  0.08970178,  0.7575036,   -1.6625646,
-      0.58224577,  -2.3422565,  -0.9072342,  -0.26166162, 0.23445846,
-      1.1196798,   1.9989598,   2.8069956,   1.9024451,   -0.6563917,
-      -0.13344143, 1.4208083,   1.0365888,   -0.7740558,  -0.22300357,
-      0.73067385,  -0.18704073, 0.44298574,  0.49447903,  0.53376937,
-      0.23053971,  1.4963183,   -0.6791098,  0.12547445,  -0.41390848,
-      -0.76128393, 0.001573253, -0.93807477, -0.8100785,  -0.8822975,
-      0.22501919,  -0.04203527, 0.2761645,   -0.7175326,  -1.4917359,
-      0.9577058,   0.632635,    0.43549782,  -0.77620095, 1.003674,
-      -0.71483773, -0.29408157, -0.69374084, 0.052461136, 0.032689545};
-  float *output_1 = nullptr;
-  const int32_t output_1_ndim = 0;
-  const int32_t *output_1_dims = nullptr;
-  const float ratio = 0.20000000298023224;
-  ONNC_RUNTIME_dropout_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                             output_0, output_0_ndim, output_0_dims, output_1,
-                             output_1_ndim, output_1_dims, ratio);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 60) < 1e-5f);
+  const float answer_0[] = {0.21913064,   0.422912,     -0.17104515, -1.3605666,   0.14346683,  -1.2587612, -0.85431975,
+                            -0.22751275,  -0.64637554,  -0.45032373, -0.10775222,  -0.76326144, 1.0841749,  0.30420542,
+                            0.44229716,   0.25023687,   1.0449243,   0.79727334,   -0.6503414,  0.28584188, 1.046587,
+                            -0.008671912, -0.37746236,  0.9519747,   0.70915437,   0.25513855,  1.2579945,  1.4754281,
+                            0.5708053,    0.20261957,   0.4378326,   -1.6589772,   -0.2461237,  0.235529,   1.531749,
+                            0.42461044,   -1.0146405,   -0.3018211,  -1.3695605,   -1.0796733,  0.979188,   1.0406072,
+                            -0.37996766,  -0.025551941, 0.2735519,   0.21806403,   -0.82011783, -0.2031602, -0.1936051,
+                            -1.1706306,   -0.21356732,  -0.3992815,  -0.114497565, -0.57213366, 0.5060143,  -0.5048138,
+                            -1.3871502,   -0.3178443,   -0.73051125, -0.5051671};
+  float*      output_1   = nullptr;
+  const int32_t  output_1_ndim = 0;
+  const int32_t* output_1_dims = nullptr;
+  const float    ratio         = 0.20000000298023224;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_dropout_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims,
+                             output_1, output_1_ndim, output_1_dims, ratio);
+  ASSERT_TRUE(norm(answer_0, output_0, 60) <= 1e-5 * norm(answer_0, 60));
 }

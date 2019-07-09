@@ -1,7 +1,7 @@
 #if defined(__GNUC__) || defined(_MSC_VER)
-#define restrict __restrict
+#  define restrict __restrict
 #else
-#define restrict
+#  define restrict
 #endif
 
 extern "C" {
@@ -10,112 +10,119 @@ extern "C" {
 
 #undef restrict
 
-#include "relative-error.hpp"
+#include "norm.hpp"
 #include <skypat/skypat.h>
-SKYPAT_F(Operator_ArgMin, test_argmin_no_keepdims_example) {
-  const float input_0[] = {2.0, 1.0, 3.0, 10.0};
-  const int32_t input_0_ndim = 2;
+SKYPAT_F(Operator_ArgMin, test_argmin_no_keepdims_example)
+{
+  const float   input_0[]      = {2.0, 1.0, 3.0, 10.0};
+  const int32_t input_0_ndim   = 2;
   const int32_t input_0_dims[] = {2, 2};
-  float output_0[2];
-  const int32_t output_0_ndim = 1;
+  float         output_0[2];
+  const int32_t output_0_ndim   = 1;
   const int32_t output_0_dims[] = {2};
-  const float answer_0[] = {1, 0};
-  const int32_t axis = 1;
-  const int32_t keepdims = 0;
-  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                            output_0, output_0_ndim, output_0_dims, axis,
+  const float   answer_0[]      = {1, 0};
+  const int32_t axis            = 1;
+  const int32_t keepdims        = 0;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims, axis,
                             keepdims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
+  ASSERT_TRUE(norm(answer_0, output_0, 2) <= 1e-5 * norm(answer_0, 2));
 }
 
-SKYPAT_F(Operator_ArgMin, test_argmin_no_keepdims_random) {
-  const float input_0[] = {
-      8.435711,   -1.1295203, -3.4878623, -6.527683, -3.140497,  9.731917,
-      -5.6662865, 1.9648325,  9.648947,   -8.753647, -7.1173553, 5.3425627,
-      -2.8315675, 1.8433671,  -6.676951,  -1.072245, -9.538525,  3.5827794,
-      -1.6333739, 0.5836068,  1.0911437,  6.7816877, 2.6894364,  4.9808316};
-  const int32_t input_0_ndim = 3;
+SKYPAT_F(Operator_ArgMin, test_argmin_no_keepdims_random)
+{
+  const float   input_0[]      = {0.6447141, 3.4821982,     -3.8642926, -6.832577,  -9.100915, -8.349545,
+                           9.428497,  0.98817515,    -5.858277,  2.7313304,  7.5159082, -9.789601,
+                           1.5363626, 5.116311,      3.4900117,  -5.7574553, 8.057887,  5.2123647,
+                           2.391684,  -0.0009357114, -8.751088,  -5.9339805, -5.097382, 3.7397482};
+  const int32_t input_0_ndim   = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[8];
-  const int32_t output_0_ndim = 2;
+  float         output_0[8];
+  const int32_t output_0_ndim   = 2;
   const int32_t output_0_dims[] = {2, 4};
-  const float answer_0[] = {1, 2, 2, 0, 1, 0, 0, 0};
-  const int32_t axis = 1;
-  const int32_t keepdims = 0;
-  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                            output_0, output_0_ndim, output_0_dims, axis,
+  const float   answer_0[]      = {1, 1, 0, 2, 2, 2, 2, 0};
+  const int32_t axis            = 1;
+  const int32_t keepdims        = 0;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims, axis,
                             keepdims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
+  ASSERT_TRUE(norm(answer_0, output_0, 8) <= 1e-5 * norm(answer_0, 8));
 }
 
-SKYPAT_F(Operator_ArgMin, test_argmin_keepdims_example) {
-  const float input_0[] = {2.0, 1.0, 3.0, 10.0};
-  const int32_t input_0_ndim = 2;
+SKYPAT_F(Operator_ArgMin, test_argmin_keepdims_example)
+{
+  const float   input_0[]      = {2.0, 1.0, 3.0, 10.0};
+  const int32_t input_0_ndim   = 2;
   const int32_t input_0_dims[] = {2, 2};
-  float output_0[2];
-  const int32_t output_0_ndim = 2;
+  float         output_0[2];
+  const int32_t output_0_ndim   = 2;
   const int32_t output_0_dims[] = {2, 1};
-  const float answer_0[] = {1, 0};
-  const int32_t axis = 1;
-  const int32_t keepdims = 1;
-  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                            output_0, output_0_ndim, output_0_dims, axis,
+  const float   answer_0[]      = {1, 0};
+  const int32_t axis            = 1;
+  const int32_t keepdims        = 1;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims, axis,
                             keepdims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
+  ASSERT_TRUE(norm(answer_0, output_0, 2) <= 1e-5 * norm(answer_0, 2));
 }
 
-SKYPAT_F(Operator_ArgMin, test_argmin_keepdims_random) {
-  const float input_0[] = {
-      -8.488436,  -8.301342, 9.657309,   -7.481117,  -7.1244693, -4.4248796,
-      -3.7669787, 6.033591,  5.09823,    5.571755,   5.236641,   -8.742535,
-      -7.7370763, 2.7235477, -1.6805363, 8.508835,   4.0892544,  8.007424,
-      3.5082245,  1.0496303, -9.3902025, -0.5500252, 3.522235,   6.2025857};
-  const int32_t input_0_ndim = 3;
+SKYPAT_F(Operator_ArgMin, test_argmin_keepdims_random)
+{
+  const float   input_0[] = {-4.6517925, -6.5708117, 7.6106606,  -4.6445985, -5.1116753, 6.38832,   -9.321501, 6.152799,
+                           0.45370436, 7.7413573,  8.851936,   -1.2576491, 2.7659814,  -5.646147, 2.1520987, 9.555886,
+                           0.5286066,  -6.855102,  -0.3682072, -5.0433764, 3.806478,   3.3542109, -5.114248, -4.744011};
+  const int32_t input_0_ndim   = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[8];
-  const int32_t output_0_ndim = 3;
+  float         output_0[8];
+  const int32_t output_0_ndim   = 3;
   const int32_t output_0_dims[] = {2, 1, 4};
-  const float answer_0[] = {0, 0, 1, 2, 2, 2, 0, 1};
-  const int32_t axis = 1;
-  const int32_t keepdims = 1;
-  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                            output_0, output_0_ndim, output_0_dims, axis,
+  const float   answer_0[]      = {1, 0, 1, 0, 1, 1, 2, 1};
+  const int32_t axis            = 1;
+  const int32_t keepdims        = 1;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims, axis,
                             keepdims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 8) < 1e-5f);
+  ASSERT_TRUE(norm(answer_0, output_0, 8) <= 1e-5 * norm(answer_0, 8));
 }
 
-SKYPAT_F(Operator_ArgMin, test_argmin_default_axis_example) {
-  const float input_0[] = {2.0, 1.0, 3.0, 10.0};
-  const int32_t input_0_ndim = 2;
+SKYPAT_F(Operator_ArgMin, test_argmin_default_axis_example)
+{
+  const float   input_0[]      = {2.0, 1.0, 3.0, 10.0};
+  const int32_t input_0_ndim   = 2;
   const int32_t input_0_dims[] = {2, 2};
-  float output_0[2];
-  const int32_t output_0_ndim = 2;
+  float         output_0[2];
+  const int32_t output_0_ndim   = 2;
   const int32_t output_0_dims[] = {1, 2};
-  const float answer_0[] = {0, 0};
-  const int32_t keepdims = 1;
-  const int32_t axis = 0;
-  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                            output_0, output_0_ndim, output_0_dims, axis,
+  const float   answer_0[]      = {0, 0};
+  const int32_t keepdims        = 1;
+  const int32_t axis            = 0;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims, axis,
                             keepdims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 2) < 1e-5f);
+  ASSERT_TRUE(norm(answer_0, output_0, 2) <= 1e-5 * norm(answer_0, 2));
 }
 
-SKYPAT_F(Operator_ArgMin, test_argmin_default_axis_random) {
-  const float input_0[] = {
-      -1.4711057, -6.5344834, -9.730243, -5.345624,   -0.15964517, -1.9733837,
-      6.5203557,  3.1507702,  7.912064,  3.5703049,   8.681772,    -3.7243218,
-      2.814305,   -2.1062737, -9.807642, -6.846598,   -9.012886,   3.168027,
-      3.2381935,  -4.3505697, -9.765868, -0.48494193, -4.7363048,  7.5645256};
-  const int32_t input_0_ndim = 3;
+SKYPAT_F(Operator_ArgMin, test_argmin_default_axis_random)
+{
+  const float   input_0[] = {4.9688897,   -4.307016, -3.601365, -7.134936,  0.6723678, 6.7263794, -1.592139, 1.5565715,
+                           8.868909,    -8.650216, 7.3581614, 0.37253144, 9.792805,  2.7446942, -8.336577, -6.6450014,
+                           -0.45864516, 2.4873939, -9.520075, 1.319186,   -6.298208, 4.8129306, 5.2597904, 4.378782};
+  const int32_t input_0_ndim   = 3;
   const int32_t input_0_dims[] = {2, 3, 4};
-  float output_0[12];
-  const int32_t output_0_ndim = 3;
+  float         output_0[12];
+  const int32_t output_0_ndim   = 3;
   const int32_t output_0_dims[] = {1, 3, 4};
-  const float answer_0[] = {0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0};
-  const int32_t keepdims = 1;
-  const int32_t axis = 0;
-  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims,
-                            output_0, output_0_ndim, output_0_dims, axis,
+  const float   answer_0[]      = {0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0};
+  const int32_t keepdims        = 1;
+  const int32_t axis            = 0;
+  using dragonite::norm;
+
+  ONNC_RUNTIME_argmin_float(nullptr, input_0, input_0_ndim, input_0_dims, output_0, output_0_ndim, output_0_dims, axis,
                             keepdims);
-  ASSERT_TRUE(relative_error(output_0, answer_0, 12) < 1e-5f);
+  ASSERT_TRUE(norm(answer_0, output_0, 12) <= 1e-5 * norm(answer_0, 12));
 }
