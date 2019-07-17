@@ -1,8 +1,6 @@
-#include <stdint.h>
-typedef int32_t ONNC_INDEX_TYPE;
-#include "generic/default.h"
-
 #include <onnc/Runtime/operator/maxpool.h>
+
+#include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <float.h>
@@ -59,20 +57,14 @@ void ONNC_RUNTIME_maxpool_float(
   ,const char * restrict auto_pad
   ,int32_t * restrict kernel_shape
   ,int32_t number_of_kernel_shape
-  ,int32_t * restrict given_pads
+  ,int32_t * restrict pads
   ,int32_t number_of_pads
   ,int32_t storage_order
-  ,int32_t * restrict given_strides
+  ,int32_t * restrict strides
   ,int32_t number_of_strides
 ) {
   assert(input_X_ndim == output_Y_ndim);
   int32_t ndim = input_X_ndim;
-  int32_t order = ndim - 2;
-  int32_t pads[2 * order];
-  int32_t strides[order];
-
-  ONNC_DEFAULT_FILL(int32_t, pads, number_of_pads ? given_pads : NULL, 2 * order, 0);
-  ONNC_DEFAULT_FILL(int32_t, strides, number_of_strides ? given_strides : NULL, order, 1);
 
   int32_t o_dim[ndim];
   memset(o_dim, 0, sizeof(o_dim));
