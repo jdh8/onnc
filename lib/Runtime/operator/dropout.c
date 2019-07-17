@@ -1,16 +1,14 @@
-#include <onnc/Runtime/operator/dropout.h>
-
 #include <stdint.h>
-#include <stdbool.h>
+typedef int32_t ONNC_INDEX_TYPE;
 
-void ONNC_RUNTIME_dropout_float(
-  void * restrict onnc_runtime_context
-  ,const float * restrict input_data
-  ,int32_t input_data_ndim, const int32_t * restrict input_data_dims
-  ,float * restrict output_output
-  ,int32_t output_output_ndim, const int32_t * restrict output_output_dims
-  ,float * restrict output_mask
-  ,int32_t output_mask_ndim, const int32_t * restrict output_mask_dims
-  ,float ratio
-) {
+#include "generic/size.h"
+#include <string.h>
+
+void ONNC_RUNTIME_dropout_float(void* context,
+    const float* restrict x, int32_t ndim, const int32_t* restrict shape,
+    float* restrict y, int32_t yndim, const int32_t* restrict yshape,
+    float* restrict mask, int32_t mask_ndim, const int32_t* restrict mask_shape,
+    float ratio)
+{
+    memcpy(y, x, onnc_size(shape, ndim) * sizeof(float));
 }
